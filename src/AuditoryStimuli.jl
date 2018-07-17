@@ -1,5 +1,119 @@
 module AuditoryStimuli
 
-# package code goes here
+using DSP
+export  correlated_noise, 
+        bandpass_noise, 
+        amplitude_modulate, 
+        ITD_modulate,
+        set_rms
+
+
+
+
+"""
+    bandpass_noise(number_samples, number_channels, lower_bound, upper_bound, sample_rate; filter_order=14)
+    bandpass_noise(data, lower_bound, upper_bound, sample_rate; filter_order=14)
+
+Generates band pass noise with specified upper and lower bounds using a butterworth filter.
+Alternatively any array can be passed in and it will be filtered to be band pass.
+"""
+function bandpass_noise(x::AbstractArray, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
+
+    responsetype = Bandpass(lower_bound, upper_bound; fs=sample_rate)
+    designmethod = Butterworth(filter_order)
+    filt(digitalfilter(responsetype, designmethod), x)
+end
+function bandpass_noise(number_samples::Int, number_channels::Int, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
+    bandpass_noise(randn(number_samples, number_channels), lower_bound, upper_bound, sample_rate, filter_order=filter_order)
+end
+
+
+
+"""
+    correlated_noise(number_samples, number_channels, correlation)
+
+Generates correlated noise with specified correlation
+"""
+function correlated_noise(number_samples::Int, number_channels::Int, correlation::Number)
+
+    @assert number_channels == 2 "Only two channel correlated noise is currently supported"
+
+    if correlation <= 0
+        random_sample       = randn(number_samples, number_channels)
+    elseif correlation < 1
+        correlation_matrix  = [1.0 correlation ;  correlation 1.0]
+        standard_deviation  = [1.0 0.0 ;  0.0 1.0]
+        covariance_matrix   = standard_deviation*correlation_matrix*standard_deviation
+        random_sample       = randn(number_samples, number_channels)*chol(covariance_matrix)    
+    else
+        random_sample       = randn(number_samples, number_channels)
+        random_sample[:, 2] = random_sample[:, 1]
+    end
+    
+    random_sample           = random_sample / maximum(random_sample)
+    return random_sample
+end
+
+
+
+"""
+    amplitude_modulate_signal(data, modulation_frequency, sample_rate; phase=π)
+
+Amplitude modulates the signal
+
+See [wikipedia](https://en.wikipedia.org/wiki/Amplitude_modulation)
+"""
+function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, sample_rate::Number; phase::Number = π)
+
+    t = 1:size(x, 1)
+    t = t ./ sample_rate
+
+    fits = mod(maximum(t), (1/modulation_frequency))
+    if !(isapprox(fits, 0, atol = 1e-5) || isapprox(fits, 1/modulation_frequency, atol = 1e-5)  )
+        warn("Not a complete modulation")
+    end
+        # println(maximum(t))
+    # println(1/modulation_frequency)
+    # println(mod(maximum(t), (1/modulation_frequency)))
+
+    M = 1 .* cos.(2 * π * modulation_frequency * t + phase)
+    (1 + M) .* x;
+
+end
+
+
+
+function ITD_modulate(x::AbstractArray, modulation_frequency::Number, ITD_1::Int, ITD_2::Int, sample_rate)
+
+    t = 1:size(x, 1)
+    t = t ./ sample_rate
+
+    Ti = 1 / modulation_frequency
+    switches = round.(Int, collect(0:Ti:maximum(t))*sample_rate)
+    switches_starts = switches[1:1:end]
+    switches_stops  = switches[2:1:end]
+
+    switch_samples = switches_stops[1] - switches_starts[1]
+
+    for idx = 1:2:length(switches_starts)-1
+        x[switches_starts[idx]+1:switches_stops[idx], 1]  = x[switches_starts[idx]+1+ITD_1:switches_stops[idx]+ITD_1, 1]  .* tukey(switch_samples, 0.01)
+        x[switches_stops[idx]+1:switches_stops[idx+1], 1] = x[switches_stops[idx]+1+ITD_2:switches_stops[idx+1]+ITD_2, 1] .* tukey(switch_samples, 0.01)
+    end    
+    return x
+end
+
+
+
+"""
+set_rms(data, desired_rms)
+
+Modify rms of signal to desired value
+
+"""
+function set_rms(data::AbstractArray, desired_rms::Number)
+
+    data / (rms(data) / desired_rms)
+    
+end
 
 end # module
