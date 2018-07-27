@@ -7,6 +7,7 @@ end
 
 using Plots
 using DSP
+using StatsBase
 
 Fs = 48000
 
@@ -90,11 +91,46 @@ end
 
         for desired_rms = 01:0.1:1
             bn = bandpass_noise(Fs * 30, 2, 300, 700, Fs)
-            bn = set_rms(bn, desired_rms)
+            bn = set_RMS(bn, desired_rms)
             @test rms(bn) ≈ desired_rms
         end
     end
 
+    @testset "Ramps" begin
+
+        @testset "Ramp on" begin
+
+            for ramp_length = [1, 2]
+                bn = bandpass_noise(Fs * 5, 2, 300, 700, Fs)
+                bn = ramp_on(bn, Fs * ramp_length)
+                @test rms(bn[1:Fs, :]) < rms(bn[2*Fs:3*Fs, :])
+            end
+        end
+
+        @testset "Ramp off" begin
+
+            for ramp_length = [1, 2]
+                bn = bandpass_noise(Fs * 5, 2, 300, 700, Fs)
+                bn = ramp_off(bn, Fs * ramp_length)
+                @test rms(bn[end-Fs:end, :]) < rms(bn[2*Fs:3*Fs, :])
+            end
+        end
+
+    end
+
+    
+    @testset "ITD" begin
+
+        for desired_itd = -100:10:100
+            cn = correlated_noise(Fs * 1, 2, 1)
+            bn = bandpass_noise(cn, 300, 700, Fs)
+            bn = set_ITD(bn, desired_itd)
+            lags = round.(Int, -150:1:150)
+            c = crosscor(bn[:, 2], bn[:, 1], lags)
+            x, idx = findmax(c)
+            @test lags[idx] == desired_itd
+        end
+    end
 
 end
 
@@ -115,7 +151,7 @@ end
 #                                     bn = bandpass_noise(cn, lower_bound, upper_bound, Fs)
 #                                     mn = amplitude_modulate(bn, modulation_frequency, Fs)
 #                                     im = ITD_modulate(mn, itd_rate, itd_samples, -itd_samples, Fs)
-#                                     of = set_rms(im, desired_rms)
+#                                     of = set_RMS(im, desired_rms)
 #                                 end
 #                             end
 #                         end

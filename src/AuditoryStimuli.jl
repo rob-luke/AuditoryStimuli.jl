@@ -5,7 +5,10 @@ export  correlated_noise,
         bandpass_noise, 
         amplitude_modulate, 
         ITD_modulate,
-        set_rms
+        set_RMS,
+        ramp_on,
+        ramp_off,
+        set_ITD
 
 
 
@@ -110,10 +113,61 @@ set_rms(data, desired_rms)
 Modify rms of signal to desired value
 
 """
-function set_rms(data::AbstractArray, desired_rms::Number)
+function set_RMS(data::AbstractArray, desired_rms::Number)
 
     data / (rms(data) / desired_rms)
     
 end
+
+
+
+
+
+"""
+ramp_on(data, number_samples)
+
+Apply a linear ramp to start of signal
+
+"""
+function ramp_on(data::AbstractArray, number_samples::Int)
+
+    data[1:number_samples, :] = linspace(0, 1, number_samples) .* data[1:number_samples, :]
+    return data
+end
+
+
+"""
+ramp_off(data, number_samples)
+
+Apply a linear ramp to end of signal
+
+"""
+function ramp_off(data::AbstractArray, number_samples::Int)
+
+    data[end-number_samples+1:end, :] = linspace(1, 0, number_samples) .* data[end-number_samples+1:end, :]
+    return data
+end
+
+
+
+"""
+ITD(data, number_samples)
+
+Introduce an ITD of number_samples
+
+"""
+function set_ITD(data::AbstractArray, number_samples::Int)
+
+    abs_number_samples = abs(number_samples)
+
+    if number_samples > 0
+        data[:, 1] = [zeros(abs_number_samples, 1); data[1:end - abs_number_samples, 1]]
+    elseif number_samples < 0
+        data[:, 2] = [zeros(abs_number_samples, 1); data[1:end - abs_number_samples, 2]]
+    end
+    
+    return data
+end
+
 
 end # module
