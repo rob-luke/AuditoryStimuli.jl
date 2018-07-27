@@ -5,7 +5,6 @@ else
     using Test
 end
 
-using Plots
 using DSP
 using StatsBase
 
