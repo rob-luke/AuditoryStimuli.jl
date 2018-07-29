@@ -24,7 +24,7 @@ time = 0:1/48000:1
 cn = correlated_noise(length(time), 2, 1)
 bn = bandpass_noise(cn, 300, 700, 48000)
 an = amplitude_modulate(bn, 40, 48000)
-im = ITD_modulate(an, 2, 24, -24, 48000)
+it = set_ITD(an, -24)
 
 a = plot(time, im, lab = "", xlab = "Time (s)", ylab = "Amplitude", xlims = (0.0, 0.5))
 b = plot(time, im, lab = map(string,[:Left :Right]), xlab = "Time (s)", ylab = "", xlims = (0.025, 0.05))
