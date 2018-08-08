@@ -1,16 +1,14 @@
 module AuditoryStimuli
 
 using DSP
-export  correlated_noise, 
-        bandpass_noise, 
-        amplitude_modulate, 
+export  correlated_noise,
+        bandpass_noise,
+        amplitude_modulate,
         ITD_modulate,
         set_RMS,
         ramp_on,
         ramp_off,
         set_ITD
-
-
 
 
 """
@@ -31,7 +29,6 @@ function bandpass_noise(number_samples::Int, number_channels::Int, lower_bound::
 end
 
 
-
 """
     correlated_noise(number_samples, number_channels, correlation)
 
@@ -47,20 +44,19 @@ function correlated_noise(number_samples::Int, number_channels::Int, correlation
         correlation_matrix  = [1.0 correlation ;  correlation 1.0]
         standard_deviation  = [1.0 0.0 ;  0.0 1.0]
         covariance_matrix   = standard_deviation*correlation_matrix*standard_deviation
-        random_sample       = randn(number_samples, number_channels)*chol(covariance_matrix)    
+        random_sample       = randn(number_samples, number_channels)*chol(covariance_matrix)
     else
         random_sample       = randn(number_samples, number_channels)
         random_sample[:, 2] = random_sample[:, 1]
     end
-    
+
     random_sample           = random_sample / maximum(random_sample)
     return random_sample
 end
 
 
-
 """
-    amplitude_modulate_signal(data, modulation_frequency, sample_rate; phase=π)
+    amplitude_modulate(data, modulation_frequency, sample_rate; phase=π)
 
 Amplitude modulates the signal
 
@@ -85,7 +81,6 @@ function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, samp
 end
 
 
-
 function ITD_modulate(x::AbstractArray, modulation_frequency::Number, ITD_1::Int, ITD_2::Int, sample_rate)
 
     t = 1:size(x, 1)
@@ -101,14 +96,13 @@ function ITD_modulate(x::AbstractArray, modulation_frequency::Number, ITD_1::Int
     for idx = 1:2:length(switches_starts)-1
         x[switches_starts[idx]+1:switches_stops[idx], 1]  = x[switches_starts[idx]+1+ITD_1:switches_stops[idx]+ITD_1, 1]  .* tukey(switch_samples, 0.01)
         x[switches_stops[idx]+1:switches_stops[idx+1], 1] = x[switches_stops[idx]+1+ITD_2:switches_stops[idx+1]+ITD_2, 1] .* tukey(switch_samples, 0.01)
-    end    
+    end
     return x
 end
 
 
-
 """
-set_rms(data, desired_rms)
+    set_RMS(data, desired_rms)
 
 Modify rms of signal to desired value
 
@@ -116,15 +110,12 @@ Modify rms of signal to desired value
 function set_RMS(data::AbstractArray, desired_rms::Number)
 
     data / (rms(data) / desired_rms)
-    
+
 end
 
 
-
-
-
 """
-ramp_on(data, number_samples)
+    ramp_on(data, number_samples)
 
 Apply a linear ramp to start of signal
 
@@ -137,7 +128,7 @@ end
 
 
 """
-ramp_off(data, number_samples)
+    ramp_off(data, number_samples)
 
 Apply a linear ramp to end of signal
 
@@ -149,9 +140,8 @@ function ramp_off(data::AbstractArray, number_samples::Int)
 end
 
 
-
 """
-ITD(data, number_samples)
+    set_ITD(data, number_samples)
 
 Introduce an ITD of number_samples
 
@@ -165,7 +155,7 @@ function set_ITD(data::AbstractArray, number_samples::Int)
     elseif number_samples < 0
         data[:, 2] = [zeros(abs_number_samples, 1); data[1:end - abs_number_samples, 2]]
     end
-    
+
     return data
 end
 
