@@ -17,7 +17,7 @@ allow_failures:
 
 ## uncomment the following lines to override the default test script
 script:
-  - julia -e 'Pkg.clone(pwd()); Pkg.build("AuditoryStimuli"); Pkg.test("AuditoryStimuli"; coverage=true)'
+  - julia -e 'using Pkg; Pkg.add("Test"); Pkg.clone(pwd()); Pkg.build("AuditoryStimuli"); Pkg.test("AuditoryStimuli"; coverage=true)'
 after_success:
   # push coverage results to Codecov
   - julia -e 'cd(Pkg.dir("AuditoryStimuli")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
