@@ -1,6 +1,7 @@
 module AuditoryStimuli
 
 using DSP
+
 export  correlated_noise,
         bandpass_noise,
         amplitude_modulate,
@@ -8,8 +9,11 @@ export  correlated_noise,
         set_RMS,
         ramp_on,
         ramp_off,
-        set_ITD
+        set_ITD,
+        PlotSpectralTemporal
 
+
+include("Plotting.jl")
 
 """
     bandpass_noise(number_samples, number_channels, lower_bound, upper_bound, sample_rate; filter_order=14)

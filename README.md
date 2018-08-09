@@ -19,6 +19,18 @@ Examples from research papers
 
 ## Example
 
+
+```julia
+time = 0:1/48000:0.5
+cn = correlated_noise(length(time), 2, 0.8)
+bn = bandpass_noise(cn, 300, 700, 48000)
+an = set_RMS(amplitude_modulate(bn, 40, 48000), 0.2)
+PlotSpectralTemporal(an, 48000, time_limits = [0.155, 0.345])
+```
+
+![am_itd](examples/eg2.png)
+
+
 ```julia
 time = 0:1/48000:1
 cn = correlated_noise(length(time), 2, 1)
