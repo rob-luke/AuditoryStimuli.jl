@@ -37,11 +37,11 @@ Fs = 48000
 
                 val, idx_lb = findmin(abs.(freq(spec) - lower_bound))
                 val, idx_bl = findmin(abs.(freq(spec) - (lower_bound - 250)))
-                @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 18
+                @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 10
 
                 val, idx_ub = findmin(abs.(freq(spec) - upper_bound))
                 val, idx_bu = findmin(abs.(freq(spec) - (upper_bound + 250)))
-                @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 18
+                @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 10
 
             end
         end
@@ -134,29 +134,36 @@ end
 end
 
 
+@testset "SampledSignals" begin
 
-# @testset "Example Usage" begin
+    @testset "NoiseSource generator" begin
 
-#     @testset "Correlated modulated bandpass noise with set RMS" begin
+        source = NoiseSource(Float64, 48000, 2)
+        a = read(source, 48000)
+        @test size(a) == (48000, 2)
+        @test std(a) ≈ 1 atol = 0.01
 
-#         for correlation = 0.2:0.2:0.8
-#             for lower_bound = 300:200:800
-#                 for upper_bound = 1300:200:1800
-#                     for modulation_frequency = 20:10:40
-#                         for itd_samples = [24, 48]
-#                             for itd_rate = [2, 4]
-#                                 for desired_rms = 0.1:0.1:1
-#                                     cn = correlated_noise(Fs * 2, 2, correlation)
-#                                     bn = bandpass_noise(cn, lower_bound, upper_bound, Fs)
-#                                     mn = amplitude_modulate(bn, modulation_frequency, Fs)
-#                                     im = ITD_modulate(mn, itd_rate, itd_samples, -itd_samples, Fs)
-#                                     of = set_RMS(im, desired_rms)
-#                                 end
-#                             end
-#                         end
-#                     end
-#                 end
-#             end
-#         end
-#     end
-# end
+        for deviation = 0.1:0.1:1.3
+            source = NoiseSource(Float64, 48000, 1, deviation)
+            a = read(source, 48000)
+            @test std(a) ≈ deviation atol = 0.01
+        end
+    end
+
+    @testset "CorrelatedNoiseSource generator" begin
+
+        source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.1)
+        a = read(source, 48000)
+        @test size(a) == (48000, 2)
+        @test std(a) ≈ 1 atol = 0.01
+
+        for deviation = 0.1:0.1:1.3
+            for correlation = 0.1:0.1:0.9
+                source = CorrelatedNoiseSource(Float64, 48000, 2, deviation, correlation)
+                a = read(source, 48000)
+                @test std(a) ≈ deviation atol = 0.025
+                @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
+            end
+        end
+    end
+end
