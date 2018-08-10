@@ -42,6 +42,7 @@ function PlotSpectralTemporal(x::AbstractArray, sample_rate::Number;
         maximum_hist_val = maximum(corr_plot.series_list[2].d[:y][.~isnan.(corr_plot.series_list[2].d[:y])])
 
         d = annotate!(0, 0.9 * maximum(amplitude_limits), text(string("Corr = ", round(cor(x)[2, 1], 3)),:left,8))
+        d = annotate!(0, -0.9 * maximum(amplitude_limits), text(string("Std = ", round(std(x), 3)),:left,8))
     end
 
     # Return all plots in layout
