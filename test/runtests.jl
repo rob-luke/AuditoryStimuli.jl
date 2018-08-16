@@ -158,7 +158,7 @@ end
         @test std(a) ≈ 1 atol = 0.01
 
         for deviation = 0.1:0.1:1.3
-            for correlation = 0.1:0.1:0.9
+            for correlation = 0.0:0.1:0.9
                 source = CorrelatedNoiseSource(Float64, 48000, 2, deviation, correlation)
                 a = read(source, 48000)
                 @test std(a) ≈ deviation atol = 0.025
