@@ -2,11 +2,14 @@ module AuditoryStimuli
 
 using DSP
 using SampledSignals
+using LinearAlgebra
+using Random
+using Logging
+using FFTW
 
 import SampledSignals: nchannels, samplerate, unsafe_read!
 
-export  correlated_noise,
-        bandpass_noise,
+export  bandpass_noise,
         amplitude_modulate,
         ITD_modulate,
         set_RMS,
@@ -41,30 +44,6 @@ function bandpass_noise(number_samples::Int, number_channels::Int, lower_bound::
 end
 
 
-"""
-    correlated_noise(number_samples, number_channels, correlation)
-
-Generates correlated noise with specified correlation
-"""
-function correlated_noise(number_samples::Int, number_channels::Int, correlation::Number)
-
-    @assert number_channels == 2 "Only two channel correlated noise is currently supported"
-
-    if correlation <= 0
-        random_sample       = randn(number_samples, number_channels)
-    elseif correlation < 1
-        correlation_matrix  = [1.0 correlation ;  correlation 1.0]
-        standard_deviation  = [1.0 0.0 ;  0.0 1.0]
-        covariance_matrix   = standard_deviation*correlation_matrix*standard_deviation
-        random_sample       = randn(number_samples, number_channels)*chol(covariance_matrix)
-    else
-        random_sample       = randn(number_samples, number_channels)
-        random_sample[:, 2] = random_sample[:, 1]
-    end
-
-    random_sample           = random_sample / maximum(random_sample)
-    return random_sample
-end
 
 
 """
@@ -81,14 +60,14 @@ function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, samp
 
     fits = mod(maximum(t), (1/modulation_frequency))
     if !(isapprox(fits, 0, atol = 1e-5) || isapprox(fits, 1/modulation_frequency, atol = 1e-5)  )
-        warn("Not a complete modulation")
+        # warn("Not a complete modulation")
     end
         # println(maximum(t))
     # println(1/modulation_frequency)
     # println(mod(maximum(t), (1/modulation_frequency)))
 
-    M = 1 .* cos.(2 * π * modulation_frequency * t + phase)
-    (1 + M) .* x;
+    M = 1 .* cos.(2 * π * modulation_frequency * t .+ phase)
+    (1 .+ M) .* x;
 
 end
 
@@ -134,7 +113,7 @@ Apply a linear ramp to start of signal
 """
 function ramp_on(data::AbstractArray, number_samples::Int)
 
-    data[1:number_samples, :] = linspace(0, 1, number_samples) .* data[1:number_samples, :]
+    data[1:number_samples, :] = LinRange(0, 1, number_samples) .* data[1:number_samples, :]
     return data
 end
 
@@ -147,7 +126,7 @@ Apply a linear ramp to end of signal
 """
 function ramp_off(data::AbstractArray, number_samples::Int)
 
-    data[end-number_samples+1:end, :] = linspace(1, 0, number_samples) .* data[end-number_samples+1:end, :]
+    data[end-number_samples+1:end, :] = LinRange(1, 0, number_samples) .* data[end-number_samples+1:end, :]
     return data
 end
 

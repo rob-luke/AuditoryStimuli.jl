@@ -1,12 +1,9 @@
 using AuditoryStimuli
-@static if VERSION < v"0.7.0-DEV.2005"
-    using Base.Test
-else
-    using Test
-end
-
+using Test
 using DSP
 using StatsBase
+using Statistics
+using Logging
 
 Fs = 48000
 
@@ -14,8 +11,9 @@ Fs = 48000
 
     @testset "Correlated Noise" begin
 
-        for correlation = 0:0.1:1
-            cn = correlated_noise(Fs * 30, 2, correlation)
+        for correlation = 0:0.1:0.9
+	    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, correlation)
+	    cn = read(source, Fs * 30)
             @test cor(cn)[1, 2] ≈ correlation atol=0.01
         end
     end
@@ -35,12 +33,12 @@ Fs = 48000
                 @test size(bn, 1) == Fs * 30
                 spec = welch_pgram(bn[:, 1], fs=Fs)
 
-                val, idx_lb = findmin(abs.(freq(spec) - lower_bound))
-                val, idx_bl = findmin(abs.(freq(spec) - (lower_bound - 250)))
+                val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 250)))
                 @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 10
 
-                val, idx_ub = findmin(abs.(freq(spec) - upper_bound))
-                val, idx_bu = findmin(abs.(freq(spec) - (upper_bound + 250)))
+                val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 250)))
                 @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 10
 
             end
@@ -71,13 +69,15 @@ end
 
         @testset "ITD Modulation" begin
 
-            cn = correlated_noise(Fs * 1, 2, 0.99)
+	    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+	    cn = read(source, Fs * 1)
             bn = bandpass_noise(cn, 300, 700, Fs)
             mn = amplitude_modulate(bn, 40, Fs)
             im = ITD_modulate(mn, 8, 24, -24, Fs)
 
 
-            cn = correlated_noise(Fs * 1, 2, 0.99)
+	    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+	    cn = read(source, Fs * 1)
             bn = bandpass_noise(cn, 300, 700, Fs)
             mn = amplitude_modulate(bn, 40, Fs)
             im = ITD_modulate(mn, 8, 48, -48, Fs)
@@ -121,7 +121,9 @@ end
     @testset "ITD" begin
 
         for desired_itd = -100:10:100
-            cn = correlated_noise(Fs * 1, 2, 1)
+
+	    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.9)
+	    cn = read(source, Fs * 1)
             bn = bandpass_noise(cn, 300, 700, Fs)
             bn = set_ITD(bn, desired_itd)
             lags = round.(Int, -150:1:150)
