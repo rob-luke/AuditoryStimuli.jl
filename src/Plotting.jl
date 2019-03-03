@@ -31,8 +31,8 @@ function PlotSpectralTemporal(x::AbstractArray, sample_rate::Number;
     # Create plots
     spec_plot = heatmap(time(spec), freq(spec), power(spec), colorbar = false, xlab = "Time (s)", ylab = "Frequency (Hz)", ylims = frequency_limits, xlims = time_limits)
 
-    peri_plot = plot(vector_pow2db(power(peri1)), freq(peri1), yticks = [], lab = "Periodogram", xlab = "Power (dB)", lab = "", ylims = frequency_limits)
-    if size(x, 2)>1; peri_plot = plot!(vector_pow2db(power(peri2)), freq(peri2), yticks = [], lab = "Periodogram", xlab = "Power (dB)", lab = "", ylims = frequency_limits); end
+    peri_plot = plot(vector_pow2db(power(peri1)), freq(peri1), yticks = [], xlab = "Power (dB)", lab = "", ylims = frequency_limits)
+    if size(x, 2)>1; peri_plot = plot!(vector_pow2db(power(peri2)), freq(peri2), yticks = [], xlab = "Power (dB)", lab = "", ylims = frequency_limits); end
 
     time_plot = plot(t, x, xticks = [], leg = false, ylab = "Amplitude", lab = "", ylims = amplitude_limits, xlims = time_limits)
     
