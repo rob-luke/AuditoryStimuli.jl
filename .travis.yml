@@ -10,3 +10,5 @@ julia:
 
 notifications:
   email: false
+
+codecov: true
