@@ -60,7 +60,7 @@ function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, samp
 
     fits = mod(maximum(t), (1/modulation_frequency))
     if !(isapprox(fits, 0, atol = 1e-5) || isapprox(fits, 1/modulation_frequency, atol = 1e-5)  )
-        # warn("Not a complete modulation")
+        @warn("Not a complete modulation")
     end
         # println(maximum(t))
     # println(1/modulation_frequency)
