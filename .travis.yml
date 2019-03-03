@@ -13,3 +13,9 @@ notifications:
   email: false
 
 codecov: true
+
+before_script:
+  - julia -e 'using Pkg;
+      Pkg.add(PackageSpec(name="MbedTLS", version="0.6.6"));
+      Pkg.pin(PackageSpec(name="MbedTLS", version="0.6.6"));
+      Pkg.add([PackageSpec(name="BinaryBuilder", rev="master"), PackageSpec(name="BinaryProvider")])'
