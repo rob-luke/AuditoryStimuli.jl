@@ -40,11 +40,15 @@ function CorrelatedNoiseSource(eltype, samplerate::Number, nchannels::Number, st
     
     @assert nchannels==2 "Only two channels are supported for CorrelatedNoiseSource"
 
-    correlation_matrix  = [1.0 corr ;  corr 1.0]
-    standard_deviation  = [std 0.0 ;  0.0 std]
-    covariance_matrix   = standard_deviation*correlation_matrix*standard_deviation
-    cholcov = cholesky(covariance_matrix)
-    cholcov = cholcov.U
+    if corr < 1
+        correlation_matrix  = [1.0 corr ;  corr 1.0]
+        standard_deviation  = [std 0.0 ;  0.0 std]
+        covariance_matrix   = standard_deviation*correlation_matrix*standard_deviation
+        cholcov = cholesky(covariance_matrix)
+        cholcov = cholcov.U
+    else
+        cholcov = [std std ; 0 0]
+    end 
 
     CorrelatedNoiseSource{eltype}(Float64(samplerate), Int64(nchannels), Array{Float64}(cholcov))
 end

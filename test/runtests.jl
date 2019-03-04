@@ -12,7 +12,7 @@ Fs = 48000
 
     @testset "Correlated Noise" begin
 
-        for correlation = 0:0.1:0.9
+        for correlation = 0:0.1:1
 	    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, correlation)
 	    cn = read(source, Fs * 30)
             @test cor(cn)[1, 2] ≈ correlation atol=0.01
