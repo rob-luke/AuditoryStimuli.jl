@@ -2,8 +2,33 @@
     CorrelatedNoiseSource(eltype, samplerate, nchannels, std, correlation)
 
 CorrelatedNoiseSource is a multi-channel (currently restricted to 2) noise signal generator.
-`std` specifies the desired standard deviation of the signal.
-`correlation` specifies the desired correlation between the signals.
+
+
+Inputs
+------
+* `samplerate` specifies the sample rate of the signal.  
+* `nchannels` specifies the number of channels of the signal.  
+* `std` specifies the desired standard deviation of the signal.  
+* `correlation` specifies the desired correlation between the signals.
+
+
+Output
+------
+* SampleSource object
+
+
+Example
+-------
+```julia
+source_object = CorrelatedNoiseSource(Float64, 48000, 2, 0.3, 0.75)
+cn = read(source_object, 480)         # Specify number of samples of signal to generate
+cn = read(source_object, 50u"ms")     # Specify length of time of signal to generate
+```
+
+Issues
+------
+Currently only supports 2 channels
+
 """
 mutable struct CorrelatedNoiseSource{T} <: SampleSource
     samplerate::Float64
