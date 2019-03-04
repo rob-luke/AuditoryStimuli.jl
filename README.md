@@ -20,7 +20,7 @@ Examples from research papers
 
 ## Examples
 
-Generate 1.5 s of bandpass (300-700 Hz) correlated (0.8) noise 
+Generate 1.5 s of amplitude modulated (40 Hz) bandpass (300-700 Hz) correlated (0.8) noise 
 
 ```julia
 # Create a signal source and generate 1.5 s of audio
