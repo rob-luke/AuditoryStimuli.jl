@@ -1,13 +1,14 @@
 
 using Plots
+using Statistics
 
 """
-    PlotSpectralTemporal(data, sample_rate)
+    PlotSpectroTemporal(data, sample_rate)
 
 This function plots the time, spectrogram, and periodogram of a signal
 
 """
-function PlotSpectralTemporal(x::AbstractArray, sample_rate::Number; 
+function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number; 
                                 figure_size::Tuple=(950, 450), 
                                 window = hamming,
                                 amplitude_limits = [-1, 1],
@@ -39,14 +40,14 @@ function PlotSpectralTemporal(x::AbstractArray, sample_rate::Number;
     corr_plot = histogram(x, orientation = :h,  ticks = [], leg = false, framestyle = :none, link = :none, nbins=20, ylims = amplitude_limits)
     if ((size(x, 2)>1) & correlation_annotate) 
 
-        maximum_hist_val = maximum(corr_plot.series_list[2].d[:y][.~isnan.(corr_plot.series_list[2].d[:y])])
+        maximum_hist_val = maximum(corr_plot.series_list[2].plotattributes[:y][.~isnan.(corr_plot.series_list[2].plotattributes[:y])])
 
-        d = annotate!(0, 0.9 * maximum(amplitude_limits), text(string("Corr = ", round(cor(x)[2, 1], 3)),:left,8))
-        d = annotate!(0, -0.9 * maximum(amplitude_limits), text(string("Std = ", round(std(x), 3)),:left,8))
+        d = annotate!(0, 0.9 * maximum(amplitude_limits), text(string("Corr = ", round(cor(x)[2, 1], digits=3)),:left,8))
+        d = annotate!(0, -0.9 * maximum(amplitude_limits), text(string("Std = ", round(std(x), digits=3)),:left,8))
     end
 
     # Return all plots in layout
-    l = Plots.@layout [c{0.6w, 0.3h} d ; a{0.8w} b]
+    l = Plots.@layout [c{0.6w, 0.3h} d  ; a{0.8w} b]
     return plot(time_plot, corr_plot, spec_plot, peri_plot, layout = l, size = figure_size, link = :none)
 
 end

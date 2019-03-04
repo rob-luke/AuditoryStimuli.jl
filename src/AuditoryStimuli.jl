@@ -16,7 +16,7 @@ export  bandpass_noise,
         ramp_on,
         ramp_off,
         set_ITD,
-        PlotSpectralTemporal,
+        PlotSpectroTemporal,
         NoiseSource,
         CorrelatedNoiseSource,
         samplerate
