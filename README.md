@@ -37,7 +37,7 @@ PlotSpectroTemporal(an, 48000, time_limits = [0.155, 0.345])
 
 ![am_itd](examples/eg2.png)
 
-Generate 1.5 s of amplitude modulated (40 Hz) bandpass (300-700 Hz) correlated (0.8) noise with an ITD of 500 μs (24 samples)
+Generate 1.5 s of amplitude modulated (40 Hz) bandpass (300-700 Hz) correlated (0.8) noise with an ITD of 500 μs
 
 
 ```julia
