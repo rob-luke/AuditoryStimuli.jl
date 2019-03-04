@@ -1,8 +1,28 @@
 """
     NoiseSource(eltype, samplerate, nchannels, std)
 
-NoiseSource is a multi-channel noise signal generator. `std` specifies
-the desired standard deviation of the signal.
+NoiseSource is a multi-channel noise signal generator. The noise on each channel is independent.
+
+
+Inputs
+------
+* `samplerate` specifies the sample rate of the signal.  
+* `nchannels` specifies the number of channels of the signal.  
+* `std` specifies the desired standard deviation of the signal.  
+
+
+Output
+------
+* SampleSource object
+
+
+Example
+-------
+```julia
+source_object = NoiseSource(Float64, 48000, 2, 0.3)
+wn = read(source_object, 480)         # Specify number of samples of signal to generate
+wn = read(source_object, 50u"ms")     # Specify length of time of signal to generate
+```
 """
 mutable struct NoiseSource{T} <: SampleSource
     samplerate::Float64
