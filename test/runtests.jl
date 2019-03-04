@@ -4,6 +4,7 @@ using DSP
 using StatsBase
 using Statistics
 using Logging
+using Plots
 
 Fs = 48000
 
@@ -168,5 +169,21 @@ end
                 @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
             end
         end
+    end
+end
+
+
+@testset "Plotting" begin
+
+    @testset "SpectroTempral" begin
+
+	source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+	cn = read(source, Fs * 1)
+	bn = bandpass_noise(cn, 300, 700, Fs)
+	mn = amplitude_modulate(bn, 40, Fs)
+	im = ITD_modulate(mn, 8, 24, -24, Fs)
+	p = PlotSpectroTemporal(im, 48000)
+	@test isa(p, Plots.Plot) == true
+
     end
 end
