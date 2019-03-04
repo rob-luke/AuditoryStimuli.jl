@@ -8,7 +8,7 @@ Generate common auditory stimuli
 ## Installation
 
 ```julia
-Pkg.clone('https://github.com/rob-luke/AuditoryStimuli.jl.git')
+] dev https://github.com/rob-luke/AuditoryStimuli.jl.git
 ```
 
 
