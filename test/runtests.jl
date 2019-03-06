@@ -100,23 +100,22 @@ Fs = 48000
 
                 for modulation_frequency = 1.3:1:10
                     x = randn(Fs, 1)
-            amplitude_modulate(x, modulation_frequency, Fs)
-            @test_logs (:warn, "Not a complete modulation") amplitude_modulate(x, modulation_frequency, Fs)
+                    amplitude_modulate(x, modulation_frequency, Fs)
+                    @test_logs (:warn, "Not a complete modulation") amplitude_modulate(x, modulation_frequency, Fs)
                 end
 
             end
 
             @testset "ITD Modulation" begin
 
-            source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
-            cn = read(source, Fs * 1)
+                source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+                cn = read(source, Fs * 1)
                 bn = bandpass_noise(cn, 300, 700, Fs)
                 mn = amplitude_modulate(bn, 40, Fs)
                 im = ITD_modulate(mn, 8, 24, -24, Fs)
 
-
-            source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
-            cn = read(source, Fs * 1)
+                source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+                cn = read(source, Fs * 1)
                 bn = bandpass_noise(cn, 300, 700, Fs)
                 mn = amplitude_modulate(bn, 40, Fs)
                 im = ITD_modulate(mn, 8, 48, -48, Fs)
@@ -161,8 +160,8 @@ Fs = 48000
 
             for desired_itd = -100:10:100
 
-            source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.9)
-            cn = read(source, Fs * 5)
+                source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.9)
+                cn = read(source, Fs * 5)
                 bn = bandpass_noise(cn, 300, 700, Fs)
                 bn = set_ITD(bn, desired_itd)
                 lags = round.(Int, -150:1:150)
