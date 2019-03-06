@@ -6,10 +6,12 @@ using LinearAlgebra
 using Random
 using Logging
 using FFTW
+using Unitful
 
 import SampledSignals: nchannels, samplerate, unsafe_read!
 
 export  bandpass_noise,
+        bandpass_filter,
         amplitude_modulate,
         ITD_modulate,
         set_RMS,
@@ -23,26 +25,50 @@ export  bandpass_noise,
 
 
 include("Plotting.jl")
+
+
+# #########################################
+# #####  Signal Generation
+# #########################################
+
 include("SignalGen/NoiseSource.jl")
 include("SignalGen/CorrelatedNoiseSource.jl")
 
+
 """
     bandpass_noise(number_samples, number_channels, lower_bound, upper_bound, sample_rate; filter_order=14)
-    bandpass_noise(data, lower_bound, upper_bound, sample_rate; filter_order=14)
 
 Generates band pass noise with specified upper and lower bounds using a butterworth filter.
-Alternatively any array can be passed in and it will be filtered to be band pass.
 """
-function bandpass_noise(x::AbstractArray, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
+function bandpass_noise(number_samples::Int, number_channels::Int, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
+    bandpass_filter(randn(number_samples, number_channels), lower_bound, upper_bound, sample_rate, filter_order=filter_order)
+end
+
+
+
+
+# #########################################
+# #####  Signal Modifiers
+# #########################################
+
+
+"""
+    bandpass_filter(AbstractArray, lower_bound, upper_bound, sample_rate; filter_order=14)
+    bandpass_filter(SampledSignal, lower_bound, upper_bound;              filter_order=14)
+
+Signal will be filtered with bandpass butterworth filter between 'lower_bound' and `upper_bound` with filter of `filter_order`.
+"""
+function bandpass_filter(x::AbstractArray, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
 
     responsetype = Bandpass(lower_bound, upper_bound; fs=sample_rate)
     designmethod = Butterworth(filter_order)
     filt(digitalfilter(responsetype, designmethod), x)
 end
-function bandpass_noise(number_samples::Int, number_channels::Int, lower_bound::Number, upper_bound::Number, sample_rate::Number; filter_order::Int = 14)
-    bandpass_noise(randn(number_samples, number_channels), lower_bound, upper_bound, sample_rate, filter_order=filter_order)
-end
 
+function bandpass_filter(x::SampledSignals.SampleBuf, lower_bound::typeof(1u"Hz"), upper_bound::typeof(1u"Hz"); filter_order::Int = 14)
+    x.data = bandpass_filter(x.data, ustrip(lower_bound), ustrip(upper_bound), x.samplerate, filter_order=filter_order)
+    x
+end
 
 
 
@@ -68,11 +94,22 @@ function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, samp
 
     M = 1 .* cos.(2 * π * modulation_frequency * t .+ phase)
     (1 .+ M) .* x;
+end
 
+function amplitude_modulate(x::SampledSignals.SampleBuf, modulation_frequency::typeof(1u"Hz"); phase::Number = π)
+    x.data = amplitude_modulate(x.data, ustrip(modulation_frequency), x.samplerate, phase=phase)
+    x
 end
 
 
+"""
+    ITD_modulate(data, modulation_frequency, ITD_1, ITD_2, samplerate)
+
+Modulate an applied ITD
+
+"""
 function ITD_modulate(x::AbstractArray, modulation_frequency::Number, ITD_1::Int, ITD_2::Int, sample_rate)
+    @warn "Unvalidated code"
 
     t = 1:size(x, 1)
     t = t ./ sample_rate

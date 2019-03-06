@@ -5,6 +5,8 @@ using StatsBase
 using Statistics
 using Logging
 using Plots
+using Unitful
+using SampledSignals
 
 Fs = 48000
 
@@ -61,7 +63,6 @@ Fs = 48000
 
                 # Test different constructors
                 bn = bandpass_noise(Fs * 30, 2, 300, 700, Fs)
-                bn = bandpass_noise(randn(Fs*30, 2), 300, 700, Fs)
 
                 # Test data is actuall filtered
                 for lower_bound = 500:500:1500
@@ -89,36 +90,104 @@ Fs = 48000
     @testset "Modifier Functions" begin
     # ==================================
 
-        @testset "Modulate Signals" begin
+    
+        @testset "Filter Signals" begin
 
-            @testset "Amplitude Modulation" begin
+            @testset "Bandpass Butterworth" begin
 
-                for modulation_frequency = 1:1:10
-                    x = randn(Fs, 1)
-                    @test_nowarn amplitude_modulate(x, modulation_frequency, Fs)
+                @testset "Abstract Arrays" begin
+
+                    # Test data is actuall filtered
+                    for lower_bound = 500:500:1500
+                        for upper_bound = 2000:500:3000
+
+                            x = randn(Fs*30, 2)
+                            bn = bandpass_filter(x, lower_bound, upper_bound, Fs)
+
+                            @test size(bn, 1) == Fs * 30
+                            @test size(bn, 2) == 2
+
+                            for channel = 1:2
+                                spec = welch_pgram(bn[:, channel], fs=Fs)
+
+                                val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                                val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 250)))
+                                @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 10
+
+                                val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                                val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 250)))
+                                @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 10
+                            end
+                        end
+                    end
                 end
 
-                for modulation_frequency = 1.3:1:10
-                    x = randn(Fs, 1)
-                    amplitude_modulate(x, modulation_frequency, Fs)
-                    @test_logs (:warn, "Not a complete modulation") amplitude_modulate(x, modulation_frequency, Fs)
+
+                @testset "Sampled Signals" begin
+
+                    source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.1)
+                    a = read(source, 48000)
+                    b = bandpass_filter(a, 300u"Hz", 700u"Hz")
+
+                    @test typeof(b) == typeof(a)
+                    @test typeof(b) == SampleBuf{Float64,2}
+
                 end
 
             end
 
+        end
+
+
+        @testset "Modulate Signals" begin
+
+            @testset "Amplitude Modulation" begin
+
+                @testset "Abstract Arrays" begin
+
+                    for modulation_frequency = 1:1:10
+                        x = randn(Fs, 1)
+                        @test_nowarn amplitude_modulate(x, modulation_frequency, Fs)
+                    end
+
+                    for modulation_frequency = 1.3:1:10
+                        x = randn(Fs, 1)
+                        amplitude_modulate(x, modulation_frequency, Fs)
+                        @test_logs (:warn, "Not a complete modulation") amplitude_modulate(x, modulation_frequency, Fs)
+                    end
+                end
+
+
+                @testset "Sampled Signals" begin
+
+                    source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.1)
+                    a = read(source, 48000)
+                    b = amplitude_modulate(a, 20u"Hz")
+
+                    @test typeof(b) == typeof(a)
+                    @test typeof(b) == SampleBuf{Float64,2}
+
+                end
+
+            end
+
+
             @testset "ITD Modulation" begin
 
-                source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
-                cn = read(source, Fs * 1)
-                bn = bandpass_noise(cn, 300, 700, Fs)
-                mn = amplitude_modulate(bn, 40, Fs)
-                im = ITD_modulate(mn, 8, 24, -24, Fs)
+                @testset "Abstract Arrays" begin
 
-                source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
-                cn = read(source, Fs * 1)
-                bn = bandpass_noise(cn, 300, 700, Fs)
-                mn = amplitude_modulate(bn, 40, Fs)
-                im = ITD_modulate(mn, 8, 48, -48, Fs)
+                    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+                    cn = read(source, Fs * 1)
+                    bn = bandpass_filter(cn, 300, 700, Fs)
+                    mn = amplitude_modulate(bn, 40, Fs)
+                    im = ITD_modulate(mn, 8, 24, -24, Fs)
+
+                    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
+                    cn = read(source, Fs * 1)
+                    bn = bandpass_filter(cn, 300, 700, Fs)
+                    mn = amplitude_modulate(bn, 40, Fs)
+                    im = ITD_modulate(mn, 8, 48, -48, Fs)
+                end
                 
             end
 
@@ -126,12 +195,27 @@ Fs = 48000
 
         @testset "RMS" begin
 
-            for desired_rms = 01:0.1:1
-                bn = bandpass_noise(Fs * 30, 2, 300, 700, Fs)
-                bn = set_RMS(bn, desired_rms)
-                @test rms(bn) ≈ desired_rms
+            @testset "Abstract Arrays" begin
+
+                for desired_rms = 01:0.1:1
+                    bn = bandpass_noise(Fs * 30, 2, 300, 700, Fs)
+                    bn = set_RMS(bn, desired_rms)
+                    @test rms(bn) ≈ desired_rms
+                end
             end
+
+            @testset "Sampled Signals" begin
+
+                for desired_rms = 01:0.1:1
+                    source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.5)
+                    bn = read(source, Fs * 30)
+                    bn = set_RMS(bn, desired_rms)
+                    @test rms(bn) ≈ desired_rms
+                end
+            end
+
         end
+
 
         @testset "Ramps" begin
 
@@ -162,7 +246,7 @@ Fs = 48000
 
                 source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.9)
                 cn = read(source, Fs * 5)
-                bn = bandpass_noise(cn, 300, 700, Fs)
+                bn = bandpass_filter(cn, 300, 700, Fs)
                 bn = set_ITD(bn, desired_itd)
                 lags = round.(Int, -150:1:150)
                 c = crosscor(bn[:, 2], bn[:, 1], lags)
@@ -183,7 +267,7 @@ Fs = 48000
 
         source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, 0.99)
         cn = read(source, Fs * 1)
-        bn = bandpass_noise(cn, 300, 700, Fs)
+        bn = bandpass_filter(cn, 300, 700, Fs)
         mn = amplitude_modulate(bn, 40, Fs)
         im = ITD_modulate(mn, 8, 24, -24, Fs)
         p = PlotSpectroTemporal(im, 48000)
