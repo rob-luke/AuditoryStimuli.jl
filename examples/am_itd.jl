@@ -11,7 +11,7 @@ noise_source = CorrelatedNoiseSource(Float64, sample_rate, audio_channels, 0.3, 
 correlated_noise = read(noise_source, 1.5u"s")
 filtered_noise = bandpass_filter(correlated_noise, 300u"Hz", 700u"Hz")
 sound_signal = set_RMS(amplitude_modulate(filtered_noise, 40u"Hz"), 0.2)
-PlotSpectroTemporal(sound_signal, sample_rate, time_limits = [0.155, 0.345])
+PlotSpectroTemporal(sound_signal, time_limits = [0.155, 0.345])
 savefig("examples/eg2.png")
 
 
