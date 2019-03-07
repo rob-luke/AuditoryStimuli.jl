@@ -32,7 +32,7 @@ filtered_noise = bandpass_filter(correlated_noise, 300u"Hz", 700u"Hz")
 sound_signal = set_RMS(amplitude_modulate(filtered_noise, 40u"Hz"), 0.2)
 
 # Plot generated signal
-PlotSpectroTemporal(sound_signal.data, sample_rate, time_limits = [0.155, 0.345])
+PlotSpectroTemporal(sound_signal, sample_rate, time_limits = [0.155, 0.345])
 ```
 
 ![am_itd](examples/eg2.png)
