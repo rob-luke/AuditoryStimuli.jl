@@ -21,6 +21,7 @@ export  bandpass_noise,
         PlotSpectroTemporal,
         NoiseSource,
         CorrelatedNoiseSource,
+        HarmonicComplex,
         samplerate
 
 
@@ -33,6 +34,7 @@ include("Plotting.jl")
 
 include("SignalGen/NoiseSource.jl")
 include("SignalGen/CorrelatedNoiseSource.jl")
+include("SignalGen/HarmonicComplex.jl")
 
 
 """
