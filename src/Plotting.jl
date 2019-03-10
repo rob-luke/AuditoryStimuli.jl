@@ -37,7 +37,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
 
     time_plot = plot(t, x, xticks = [], leg = false, ylab = "Amplitude", lab = "", ylims = amplitude_limits, xlims = time_limits)
     
-    corr_plot = histogram(x, orientation = :h,  ticks = [], leg = false, framestyle = :none, link = :none, bins=-1:0.1:1, ylims = amplitude_limits)
+    corr_plot = histogram(x, orientation = :h,  ticks = [], leg = false, framestyle = :none, link = :none, bins=LinRange(amplitude_limits[1], amplitude_limits[2], 15), ylims = amplitude_limits)
     if ((size(x, 2)>1) & correlation_annotate) 
 
         maximum_hist_val = maximum(corr_plot.series_list[2].plotattributes[:y][.~isnan.(corr_plot.series_list[2].plotattributes[:y])])
