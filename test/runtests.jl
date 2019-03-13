@@ -7,6 +7,7 @@ using Logging
 using Plots
 using Unitful
 using SampledSignals
+using Images
 
 Fs = 48000
 
@@ -53,6 +54,27 @@ Fs = 48000
                         @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
                     end
                 end
+            end
+
+            @testset "Harmonic Complex" begin
+
+                source = HarmonicComplex(Float64, 48000, 2000)
+                a = read(source, 48000)
+                @test size(a) == (48000, 1)
+
+
+                freqs = collect(200:200:2400.0)
+                source = HarmonicComplex(Float64, 48000, freqs)
+                a = read(source, 48000)
+                b = welch_pgram(vec(a.data), fs=a.samplerate)
+                maxs_cart = findlocalmaxima(power(b))
+                maxs = [idx[1] for idx in maxs_cart]
+                @info maxs
+                @info power(b)[maxs]
+                maxs = maxs[power(b)[maxs] .> 0.02]
+                @info maxs
+                @test freq(b)[maxs] == freqs
+
             end
 
         end
