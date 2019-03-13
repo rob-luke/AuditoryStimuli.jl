@@ -24,7 +24,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
     end
 
     # Calculate signal transforms
-    spec = spectrogram(x[:, 1], 512, 256, fs = sample_rate, window = window)
+    spec = spectrogram(x[:, 1], 1024, 256, fs = sample_rate, window = window)
     peri1 = welch_pgram(x[:, 1], 2048, 512, fs = sample_rate)
     if size(x, 2)>1; peri2 = welch_pgram(x[:, 2], 2048, 512, fs = sample_rate); end
     tfft = fft(x[:, 1])
