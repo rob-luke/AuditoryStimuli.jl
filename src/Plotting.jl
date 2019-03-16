@@ -14,7 +14,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
                                 amplitude_limits = [-1, 1],
                                 time_limits = nothing,
                                 frequency_limits = [0, 1500],
-                                correlation_annotate = true)
+                                correlation_annotate = true, args...)
 
     # Generate time vector
     t = 1:size(x, 1) 
@@ -48,7 +48,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
 
     # Return all plots in layout
     l = Plots.@layout [c{0.6w, 0.3h} d  ; a{0.8w} b]
-    return plot(time_plot, corr_plot, spec_plot, peri_plot, layout = l, size = figure_size, link = :none)
+    return plot(time_plot, corr_plot, spec_plot, peri_plot, layout = l, size = figure_size, link = :none; args...)
 
 end
 
