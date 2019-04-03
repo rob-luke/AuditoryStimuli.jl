@@ -11,7 +11,7 @@ This function plots the time, spectrogram, and periodogram of a signal
 function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number; 
                                 figure_size::Tuple=(950, 450), 
                                 window = hamming,
-                                amplitude_limits = [-1, 1],
+                                amplitude_limits = nothing,
                                 time_limits = nothing,
                                 frequency_limits = [0, 1500],
                                 correlation_annotate = true)
@@ -22,6 +22,14 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
     if time_limits == nothing
         time_limits = [0, maximum(t)]
     end
+
+    # Extract required stats
+    if isnothing(amplitude_limits)
+        amplitude_limits = maximum(abs.(x))
+        amplitude_limits = (-amplitude_limits, amplitude_limits)
+        @info "Manually set amplitude limits" amplitude_limits
+    end
+        @info "Manually set amplitude limits" amplitude_limits
 
     # Calculate signal transforms
     spec = spectrogram(x[:, 1], 1024, 256, fs = sample_rate, window = window)
@@ -55,7 +63,7 @@ end
 function PlotSpectroTemporal(x::SampledSignals.SampleBuf; 
                              figure_size::Tuple=(950, 450), 
                              window = hamming,
-                             amplitude_limits = [-1, 1],
+                             amplitude_limits = nothing,
                              time_limits = nothing,
                              frequency_limits = [0, 1500],
                              correlation_annotate = true)
