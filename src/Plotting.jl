@@ -12,6 +12,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
                                 figure_size::Tuple=(950, 450), 
                                 window = hamming,
                                 amplitude_limits = nothing,
+                                power_limits = nothing,
                                 time_limits = nothing,
                                 frequency_limits = [0, 1500],
                                 correlation_annotate = true, kwargs...)
@@ -23,22 +24,27 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
         time_limits = [0, maximum(t)]
     end
 
+    # Calculate signal transforms
+    spec = spectrogram(x[:, 1], 1024, 256, fs = sample_rate, window = window)
+    peri1 = welch_pgram(x[:, 1], 2048, 512, fs = sample_rate)
+    peri1_power = vector_pow2db(power(peri1))
+    if size(x, 2)>1; peri2 = welch_pgram(x[:, 2], 2048, 512, fs = sample_rate); end
+    tfft = fft(x[:, 1])
+
     # Extract required stats
     if isnothing(amplitude_limits)
         amplitude_limits = maximum(abs.(x))
         amplitude_limits = (-amplitude_limits, amplitude_limits)
     end
-
-    # Calculate signal transforms
-    spec = spectrogram(x[:, 1], 1024, 256, fs = sample_rate, window = window)
-    peri1 = welch_pgram(x[:, 1], 2048, 512, fs = sample_rate)
-    if size(x, 2)>1; peri2 = welch_pgram(x[:, 2], 2048, 512, fs = sample_rate); end
-    tfft = fft(x[:, 1])
+    if isnothing(power_limits)
+        idxs = (freq(peri1) .> frequency_limits[1]) .& (freq(peri1) .< frequency_limits[2])
+        power_limits = (minimum(peri1_power[idxs]), maximum(peri1_power[idxs]))
+    end
 
     # Create plots
     spec_plot = heatmap(time(spec), freq(spec), power(spec), colorbar = false, xlab = "Time (s)", ylab = "Frequency (Hz)", ylims = frequency_limits, xlims = time_limits)
 
-    peri_plot = plot(vector_pow2db(power(peri1)), freq(peri1), yticks = [], xlab = "Power (dB)", lab = "", ylims = frequency_limits)
+    peri_plot = plot(peri1_power, freq(peri1), yticks = [], xlab = "Power (dB)", lab = "", ylims = frequency_limits, xlims = power_limits)
     if size(x, 2)>1; peri_plot = plot!(vector_pow2db(power(peri2)), freq(peri2), yticks = [], xlab = "Power (dB)", lab = "", ylims = frequency_limits); end
 
     time_plot = plot(t, x, xticks = [], leg = false, ylab = "Amplitude", lab = "", ylims = amplitude_limits, xlims = time_limits)
@@ -62,6 +68,7 @@ function PlotSpectroTemporal(x::SampledSignals.SampleBuf;
                              figure_size::Tuple=(950, 450), 
                              window = hamming,
                              amplitude_limits = nothing,
+                             power_limits = nothing,
                              time_limits = nothing,
                              frequency_limits = [0, 1500],
                              correlation_annotate = true)
