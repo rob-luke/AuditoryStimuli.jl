@@ -69,10 +69,7 @@ Fs = 48000
                 b = welch_pgram(vec(a.data), fs=a.samplerate)
                 maxs_cart = findlocalmaxima(power(b))
                 maxs = [idx[1] for idx in maxs_cart]
-                @info maxs
-                @info power(b)[maxs]
                 maxs = maxs[power(b)[maxs] .> 0.02]
-                @info maxs
                 @test freq(b)[maxs] == freqs
 
             end

@@ -27,9 +27,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
     if isnothing(amplitude_limits)
         amplitude_limits = maximum(abs.(x))
         amplitude_limits = (-amplitude_limits, amplitude_limits)
-        @info "Manually set amplitude limits" amplitude_limits
     end
-        @info "Manually set amplitude limits" amplitude_limits
 
     # Calculate signal transforms
     spec = spectrogram(x[:, 1], 1024, 256, fs = sample_rate, window = window)
