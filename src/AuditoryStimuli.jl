@@ -98,7 +98,13 @@ function amplitude_modulate(x::AbstractArray, modulation_frequency::Number, samp
     (1 .+ M) .* x;
 end
 
+
 function amplitude_modulate(x::SampledSignals.SampleBuf, modulation_frequency::typeof(1u"Hz"); phase::Number = π)
+    amplitude_modulate(x, modulation_frequency * 1.0, phase=phase)
+
+end
+
+function amplitude_modulate(x::SampledSignals.SampleBuf, modulation_frequency::typeof(1.0u"Hz"); phase::Number = π)
     x.data = amplitude_modulate(x.data, ustrip(modulation_frequency), x.samplerate, phase=phase)
     x
 end
