@@ -15,7 +15,7 @@ Built on top of [SampledSignals](https://github.com/JuliaAudio/SampledSignals.jl
 
 ## Coming soon
 
-Examples from research papers
+Examples from research papers...
 
 
 ## Examples
