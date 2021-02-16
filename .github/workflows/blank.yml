@@ -19,6 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        experimental: [false]
         provider:
           - 'FFTW'
         version:
