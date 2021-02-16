@@ -24,7 +24,6 @@ jobs:
         version:
           - '1.2'
           - '1'
-          - 'nightly'
         os:
           - ubuntu-latest
           - macOS-latest
@@ -44,6 +43,9 @@ jobs:
             arch: x86
           - provider: 'MKL'
             threads: '2'
+        include:
+          - version: 'nightly'
+            experimental: true
 
     steps:
       - uses: actions/checkout@v2
