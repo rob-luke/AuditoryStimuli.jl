@@ -23,7 +23,7 @@ jobs:
         provider:
           - 'FFTW'
         version:
-          - '1.2'
+          - '1.4'
           - '1'
         os:
           - ubuntu-latest
