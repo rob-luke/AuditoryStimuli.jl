@@ -4,15 +4,40 @@ on: [push, pull_request]
 
 jobs:
   test:
+    timeout-minutes: 10
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - provider ${{ matrix.provider }} - ${{ matrix.threads }} thread(s)
     runs-on: ${{ matrix.os }}
+    env:
+      JULIA_FFTW_PROVIDER: ${{ matrix.provider }}
+      JULIA_NUM_THREADS: ${{ matrix.threads }}
     strategy:
+      fail-fast: false
       matrix:
-        julia-version: ['1.0', '1', 'nightly']
-        julia-arch: [x64, x86]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        provider:
+          - 'FFTW'
+        version:
+          - '1.0'
+          - '1'
+#           - 'nightly'
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+        threads:
+          - '1'
+        arch:
+          - x64
+          - x86
         exclude:
+          # 32-bit Julia binaries are not available on macOS
           - os: macOS-latest
-            julia-arch: x86
+            arch: x86
+          # 32-bit Linux binary for MKL isn't always available, let's ignore it
+          - os: ubuntu-latest
+            provider: 'MKL'
+            arch: x86
+          - provider: 'MKL'
+            threads: '2'
 
     steps:
       - uses: actions/checkout@v2
