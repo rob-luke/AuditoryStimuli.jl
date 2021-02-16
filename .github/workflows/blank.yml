@@ -1,6 +1,12 @@
 name: Run tests
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+    tags: '*'
+
 
 jobs:
   test:
@@ -16,9 +22,9 @@ jobs:
         provider:
           - 'FFTW'
         version:
-          - '1.0'
+          - '1.2'
           - '1'
-#           - 'nightly'
+          - 'nightly'
         os:
           - ubuntu-latest
           - macOS-latest
@@ -27,7 +33,7 @@ jobs:
           - '1'
         arch:
           - x64
-          - x86
+#           - x86
         exclude:
           # 32-bit Julia binaries are not available on macOS
           - os: macOS-latest
