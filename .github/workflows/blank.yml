@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        experimental: [false]
+#         experimental: [false]
         provider:
           - 'FFTW'
         version:
@@ -44,9 +44,9 @@ jobs:
             arch: x86
           - provider: 'MKL'
             threads: '2'
-        include:
-          - version: 'nightly'
-            experimental: true
+#         include:
+#           - version: 'nightly'
+#             experimental: true
 
     steps:
       - uses: actions/checkout@v2
