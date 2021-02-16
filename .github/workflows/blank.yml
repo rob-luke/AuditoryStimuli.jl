@@ -32,8 +32,8 @@ jobs:
         threads:
           - '1'
         arch:
-          - x64
-#           - x86
+#           - x64
+          - x86
         exclude:
           # 32-bit Julia binaries are not available on macOS
           - os: macOS-latest
