@@ -1,5 +1,7 @@
 name = "AuditoryStimuli"
 uuid = "8341a549-d843-5d3b-924f-10e41641b3ea"
+authors = ["Robert Luke <mail@robertluke.net>"]
+version = "0.0.3"
 
 [deps]
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
