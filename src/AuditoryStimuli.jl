@@ -1,3 +1,7 @@
+"""
+A Julia package for generating auditory stimuli.
+
+"""
 module AuditoryStimuli
 
 using DSP
