@@ -15,5 +15,6 @@ makedocs(
 
 
 deploydocs(
-    repo   = "github.com/rob-luke/AuditoryStimuli.jl.git",
+    repo = "github.com/rob-luke/AuditoryStimuli.jl.git",
+    push_preview = true,
 )
