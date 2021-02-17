@@ -4,11 +4,6 @@ A [Julia](http://julialang.org) package for generating auditory stimuli.
 
 ---
 
-### Authors
-
-- [Robert Luke](https://github.com/rob-luke)
-
-
 
 ### Installation
 
