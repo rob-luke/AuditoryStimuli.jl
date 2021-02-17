@@ -6,21 +6,15 @@ A [Julia](http://julialang.org) package for generating auditory stimuli.
 
 ### Authors
 
-- [Robert Luke](http://www.cicc.unam.mx/~benet/), Instituto de Ciencias
-    Físicas, Universidad Nacional Autónoma de México (UNAM).
+- [Robert Luke](https://github.com/rob-luke)
 
 
-### License
-
-TaylorSeries is licensed under the MIT "Expat" license; see
-[LICENSE](https://github.com/lbenet/TaylorSeries.jl/blob/master/LICENSE.md) for
-the full license text.
 
 ### Installation
 
-TaylorSeries.jl is a [registered package](http://pkg.julialang.org), and is
+AuditoryStimuli.jl is not yet a [registered package](http://pkg.julialang.org), so
 simply installed by running
 
 ```julia
-pkg> add("TaylorSeries")
+pkg> add("https://github.com/rob-luke/AuditoryStimuli.jl.git")
 ```

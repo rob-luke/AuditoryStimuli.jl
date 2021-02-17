@@ -12,3 +12,8 @@ makedocs(
         "API" => "api.md"
     ]
 )
+
+
+deploydocs(
+    repo   = "github.com/rob-luke/AuditoryStimuli.jl.git",
+)
