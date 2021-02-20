@@ -1,5 +1,7 @@
 # Examples
 
+In this section we demonstrate some common auditory signals you may wish to generate.
+
 The examples below all begin with the following imports and default settings.
 
 ```@example
@@ -45,7 +47,7 @@ it = set_ITD(modulated_noise, -24)
 time = 1:size(it, 1); time = time ./ sample_rate
 a = plot(time, it, lab = "", xlab = "Time (s)", ylab = "Amplitude", xlims = (0.0, 0.5))
 b = plot(time, it, lab = map(string,[:Left :Right]), xlab = "Time (s)", ylab = "", xlims = (0.025, 0.05))
-plot(a, b, size = (800, 400))
+plot(a, b, size = (800, 300))
 ```
 
 
@@ -60,6 +62,6 @@ audio_channels = 2 # hide
 source = HarmonicComplex(Float64, 48000, collect(200:200:2400))
 sound = read(source, 6u"s")
 sound = amplitude_modulate(sound, 15u"Hz")
-sound = sound .* 0.03
+sound = set_RMS(sound, 0.1)
 PlotSpectroTemporal(sound, frequency_limits = [0, 3000], time_limits = [0.135, 0.33], amplitude_limits = [-0.6, 0.6], figure_size=(800, 400))
 ```
