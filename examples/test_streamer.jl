@@ -6,49 +6,34 @@ using Pipe: @pipe
 # ## Helper functions
 # ###########################
 
-
-function get_stream(soundcard::String="Analog (3+4) (RME Fireface UCX)")
+"""
+This function returns the port audio stream matching the requested card
+"""
+function get_soundcard_stream(soundcard::String="Fireface")
     a = PortAudio.devices()
-    idx = [occursin("Fireface", d.name) for d in a]
+    idx = [occursin(soundcard, d.name) for d in a]
     if sum(idx) > 1
-        # Multiple fireface devices found, using the user specified one
-        name = soundcard
-    else
-        # Only one fireface card found, so using that
-        name = a[findfirst(idx)].name
+        error("Multiple soundcards with requested name ($soundcard) were found: $a")
     end
-    @printf("Using device: %s\n", name)
-    try
-        # Open the stream to the specified sound card
-        stream = PortAudioStream(name, 0, 2)
-    catch
-        @printf("Unable to connect to %s, printing available devices\n", name)
-        PortAudio.devices()
-        stream = PortAudioStream(name, 0, 2)
-    end
+    name = a[findfirst(idx)].name
+    println("Using device: $name")
+    stream = PortAudioStream(name, 0, 2)
 end
 
-function get_user_value(T=String, msg=""; maxval=9, minval=1, debug=false)
-    print("$msg ")
-    if T == String
-        return readline()
+"""
+This function presents a prompt to the user and ensures
+the response is valid. If the response is valid it is returned.
+If not, it returns `quit`.
+"""
+function query_prompt(query, typ)
+    print(query, ": ")
+    choice = uppercase(strip(readline(stdin)))
+    if ((ret = tryparse(typ, choice)) != nothing) && (0 < ret < 10)
+        return ret
     else
-        try
-            a =  parse(T,readline())
-            debug && println(a)
-        catch
-            println("Sorry, I could not interpret your answer. Please try again")
-            a = get_user_value(T,msg)
-        end
-        if a > maxval
-            println("Number must be less than 10")
-            a = get_user_value(T,msg)
-        elseif a < minval
-            println("Number must be more than 0")
-            a = get_user_value(T,msg)
-        end
+        println("A number between 1-9 was not entered... quiting")
+        return "quit"
     end
-    return a
 end
 
 
@@ -56,27 +41,41 @@ end
 # ## Main function
 # ###########################
 
-soundcard = get_stream()
+# Set up the audio pathway objects
+soundcard = get_soundcard_stream()
 noise_source = NoiseSource(Float64, 48000, 2, 0.2)
 amplify = Amplification(0.1, 0.01, 0.005)
 
-
+# Instansiate the audio stream in its own thread
 noise_stream = Threads.@spawn begin
     while amplify.current_amplification > 0.001
-        @pipe read(noise_source, 0.01u"s") |> modify(amplify, _)  |> write(soundcard, _)
+        @pipe read(noise_source, 0.01u"s") |> modify(amplify, _) |> write(soundcard, _)
     end
 end
 
+
+#=
+Main function
+
+Noise is played. The user is asked to select an amplification from 1-9.
+When the user selects an amplification it is applied to the noise.
+The noise is ramped to the desired value.
+Simulatenously the user is asked for a new amplification.
+The amplification of the noise can be modified at any time, it does not have
+to have ramped all the way to the previously selected value.
+If the user selects a value other than 1-9 the noise is ramped off
+and then program exits.
+=#
 while amplify.current_amplification > 0.001
-    a = get_user_value(String, "Select amplification: 1(quiet) to 9(loud)")
-    print(a)
-    try
-        global amplify.target_amplification = parse(Float64, a) / 10.0
-    catch
-        global amplify.target_amplification = 0
-        while amplify.current_amplification > 0.001
-            sleep(0.2)
-        end
+    a = query_prompt("Select amplification. 1(quiet) to 9(loud), or q(quit)",  Float64)
+
+    if a isa Number
+        # Update the target amplifcation
+        setproperty!(amplify, :target_amplification, a / 10.0)
+    else
+        # Ramp the amplifcation to zero and then exit
+        setproperty!(amplify, :target_amplification, 0.0)
+        while amplify.current_amplification > 0.001; sleep(0.2); end
         println("Shuting down")
     end
 end

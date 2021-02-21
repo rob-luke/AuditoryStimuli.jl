@@ -22,12 +22,9 @@ attenuated_sound = write(amplify, original_sound)
 ```
 """
 mutable struct Amplification
-    target_amplification::Float64     # Desired scaling factor
-    current_amplification::Float64    # Current scaling factor
-    amplification_change_limit::Float64    # Maximum change in scaling per frame
-end
-function Amplification(target_amplification::Number, current_amplification::Number, amplification_change_limit::Number)
-    Amplification(target_amplification, current_amplification, amplification_change_limit)
+    target_amplification::Float64           # Desired scaling factor
+    current_amplification::Float64          # Current scaling factor
+    amplification_change_limit::Float64     # Maximum change in scaling per frame
 end
 function modify(sink::Amplification, buf)
     # Determine if the currect scaling needs to be updated
