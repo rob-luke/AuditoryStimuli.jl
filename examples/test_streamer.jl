@@ -58,7 +58,7 @@ end
 
 
 # ###########################
-# ## Main function
+# ## Main program structure
 # ###########################
 
 # Set up the audio pathway objects
@@ -73,9 +73,9 @@ noise_stream = Threads.@spawn begin
     end
 end
 
-
 # Main function
 while amplify.current_amplification > 0.001
+
     a = query_prompt("Select amplification. 1(quiet) to 9(loud), or q(quit)",  Float64)
 
     if a isa Number
