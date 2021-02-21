@@ -74,10 +74,7 @@ noise_stream = Threads.@spawn begin
 end
 
 
-#=
-Main function
-
-=#
+# Main function
 while amplify.current_amplification > 0.001
     a = query_prompt("Select amplification. 1(quiet) to 9(loud), or q(quit)",  Float64)
 
