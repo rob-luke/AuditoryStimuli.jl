@@ -7,9 +7,8 @@ A [Julia](http://julialang.org) package for generating auditory stimuli.
 
 ### Installation
 
-AuditoryStimuli.jl is not yet a [registered package](http://pkg.julialang.org), so
-simply installed by running
+To install this package enter the package manager by pressing `]` at the julia prompt and enter:
 
 ```julia
-pkg> add("https://github.com/rob-luke/AuditoryStimuli.jl.git")
+pkg> add AuditoryStimuli
 ```
