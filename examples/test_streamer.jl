@@ -63,7 +63,7 @@ amplify = Amplification(0.1, 0.01, 0.005)
 
 noise_stream = Threads.@spawn begin
     while amplify.current_amplification > 0.001
-        @pipe read(noise_source, 0.01u"s") |> write(amplify, _)  |> write(soundcard, _)
+        @pipe read(noise_source, 0.01u"s") |> modify(amplify, _)  |> write(soundcard, _)
     end
 end
 

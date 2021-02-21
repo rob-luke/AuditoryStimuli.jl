@@ -19,6 +19,12 @@ NoiseSource
 HarmonicComplex
 ```
 
+## Online signal modifiers
+
+```@docs
+Amplification
+```
+
 
 ## Signal modifiers
 

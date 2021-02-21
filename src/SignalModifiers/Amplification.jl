@@ -1,7 +1,7 @@
 """
     Amplification(target_amplification, current_amplifcation, amplification_change_limit)
 
-NoiseSource is a multi-channel noise signal generator. The noise on each channel is independent.
+Apply amplification to the signal
 
 Inputs
 ------
@@ -29,7 +29,7 @@ end
 function Amplification(target_amplification::Number, current_amplification::Number, amplification_change_limit::Number)
     Amplification(target_amplification, current_amplification, amplification_change_limit)
 end
-function write(sink::Amplification, buf)
+function modify(sink::Amplification, buf)
     # Determine if the currect scaling needs to be updated
     if sink.target_amplification != sink.current_amplification
         error = sink.target_amplification - sink.current_amplification

@@ -13,7 +13,6 @@ using FFTW
 using Unitful
 
 import SampledSignals: nchannels, samplerate, unsafe_read!
-import Base.write
 
 export  bandpass_noise,
         bandpass_filter,
@@ -29,7 +28,7 @@ export  bandpass_noise,
         HarmonicComplex,
         Amplification,
         samplerate,
-        write
+        modify
 
 
 include("Plotting.jl")
