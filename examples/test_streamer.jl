@@ -1,3 +1,23 @@
+#=
+
+White noise generator with variable volume
+==========================================
+
+This program generates white noise and plays it through your speakers.
+The volume of the white noise can be adjusted via a command prompt.
+
+Details
+-------
+
+Noise is played. The user is asked to select an amplification from 1-9.
+When the user selects an amplification it is applied to the noise.
+The noise is ramped to the desired value.
+Simulatenously the user is asked for a new amplification.
+The amplification of the noise can be modified at any time, it does not have
+to have ramped all the way to the previously selected value.
+If the user selects a value other than 1-9 the noise is ramped off
+=#
+
 using PortAudio, Unitful, AuditoryStimuli, SampledSignals, Printf
 using Pipe: @pipe
 
@@ -57,14 +77,6 @@ end
 #=
 Main function
 
-Noise is played. The user is asked to select an amplification from 1-9.
-When the user selects an amplification it is applied to the noise.
-The noise is ramped to the desired value.
-Simulatenously the user is asked for a new amplification.
-The amplification of the noise can be modified at any time, it does not have
-to have ramped all the way to the previously selected value.
-If the user selects a value other than 1-9 the noise is ramped off
-and then program exits.
 =#
 while amplify.current_amplification > 0.001
     a = query_prompt("Select amplification. 1(quiet) to 9(loud), or q(quit)",  Float64)
