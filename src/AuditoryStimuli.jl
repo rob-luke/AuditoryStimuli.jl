@@ -47,6 +47,7 @@ include("SignalGenerators/HarmonicComplex.jl")
 # #########################################
 
 include("SignalModifiers/Amplification.jl")
+include("SignalModifiers/BandpassFilter.jl")
 
 
 """

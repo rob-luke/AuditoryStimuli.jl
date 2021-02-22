@@ -18,7 +18,7 @@ to have ramped all the way to the previously selected value.
 If the user selects a value other than 1-9 the noise is ramped off
 =#
 
-using PortAudio, Unitful, AuditoryStimuli, SampledSignals, Printf
+using PortAudio, Unitful, AuditoryStimuli, SampledSignals, Printf, DSP
 using Pipe: @pipe
 
 
@@ -50,6 +50,8 @@ function query_prompt(query, typ)
     choice = uppercase(strip(readline(stdin)))
     if ((ret = tryparse(typ, choice)) != nothing) && (0 < ret < 10)
         return ret
+    elseif choice == "F"
+        return "f"
     else
         println("A number between 1-9 was not entered... quiting")
         return "quit"
@@ -61,15 +63,22 @@ end
 # ## Main program structure
 # ###########################
 
+responsetype = Bandpass(500, 4000; fs=48000)
+designmethod = Butterworth(4)
+zpg = digitalfilter(responsetype, designmethod)
+f = DSP.Filters.DF2TFilter(zpg)
+
+
 # Set up the audio pathway objects
 soundcard = get_soundcard_stream()
 noise_source = NoiseSource(Float64, 48000, 2, 0.2)
 amplify = Amplification(0.1, 0.01, 0.005)
+bandpass = AuditoryStimuli.Filter([f, f])
 
 # Instansiate the audio stream in its own thread
-noise_stream = Threads.@spawn begin
+ noise_stream = Threads.@spawn begin
     while amplify.current_amplification > 0.001
-        @pipe read(noise_source, 0.01u"s") |> modify(amplify, _) |> write(soundcard, _)
+        @pipe read(noise_source, 0.01u"s") |> modify(amplify, _) |> modify(bandpass, _) |> write(soundcard, _)
     end
 end
 
@@ -81,6 +90,8 @@ while amplify.current_amplification > 0.001
     if a isa Number
         # Update the target amplifcation
         setproperty!(amplify, :target_amplification, a / 10.0)
+    elseif a == "f"
+        setproperty!(bandpass, :enable, !bandpass.enable)
     else
         # Ramp the amplifcation to zero and then exit
         setproperty!(amplify, :target_amplification, 0.0)
