@@ -65,3 +65,4 @@ sound = amplitude_modulate(sound, 15u"Hz")
 sound = set_RMS(sound, 0.1)
 PlotSpectroTemporal(sound, frequency_limits = [0, 3000], time_limits = [0.135, 0.33], amplitude_limits = [-0.6, 0.6], figure_size=(800, 400))
 ```
+

@@ -8,7 +8,8 @@ makedocs(
     authors  = "Robert Luke",
     pages = [
         "Home" => "index.md",
-        "Examples" => "examples.md",
+        "Examples - Offline" => "examples.md",
+        "Examples - Realtime " => "examples-realtime.md",
         "API" => "api.md"
     ]
 )
