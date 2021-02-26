@@ -13,6 +13,9 @@ First we load the required packages and specify the sample rate and number of au
 ```@example realtime
 using AuditoryStimuli, Unitful, Plots, Pipe
 
+gr()
+Plots.reset_defaults()
+
 sample_rate = 48000
 audio_channels = 2;
 source_rms = 0.2
