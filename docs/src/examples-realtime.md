@@ -58,9 +58,11 @@ This is then passed through the signal amplifier,
 then sent to the sink.
 
 ```@example realtime
+println(size(sink.buf))
 for frame = 1:300
     @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
 end
+println(size(sink.buf))
 ```
 
 
