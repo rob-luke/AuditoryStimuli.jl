@@ -72,3 +72,13 @@ end
 ```@example realtime
 display(plot(sink.buf))
 ```
+
+Next we can modify the amplification and push another 2 seconds through
+the pipeline.
+
+```@example realtime
+for frame = 1:200
+    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
+end
+```
+
