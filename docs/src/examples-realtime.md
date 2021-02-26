@@ -13,9 +13,6 @@ First we load the required packages and specify the sample rate and number of au
 ```@example realtime
 using AuditoryStimuli, Unitful, Plots, Pipe
 
-gr()
-Plots.reset_defaults()
-
 sample_rate = 48000
 audio_channels = 2;
 source_rms = 0.2
@@ -70,7 +67,7 @@ end
 ## Verify the output
 
 ```@example realtime
-plot(sink.buf)
+plot(sink.buf, size = (800, 300))
 ```
 
 Next we can modify the amplification and push another 2 seconds through
