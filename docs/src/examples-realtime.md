@@ -70,5 +70,5 @@ end
 ## Verify the output
 
 ```@example realtime
-plot(sink.buf)
+display(plot(sink.buf))
 ```
