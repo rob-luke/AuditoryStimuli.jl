@@ -1,4 +1,5 @@
-
+# This code is from https://github.com/JuliaAudio/SampledSignals.jl/blob/2d078e86489232f77af3696f0ea6d0e34016e7b0/test/support/util.jl
+# Copyright (c) 2015: Spencer Russell. Released under the MIT "Expat" License.
 mutable struct DummySampleSink{T} <: SampleSink
     samplerate::Float64
     buf::Array{T, 2}
