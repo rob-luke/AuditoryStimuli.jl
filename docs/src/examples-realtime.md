@@ -70,7 +70,7 @@ end
 ## Verify the output
 
 ```@example realtime
-display(plot(sink.buf))
+plot(sink.buf)
 ```
 
 Next we can modify the amplification and push another 2 seconds through
