@@ -339,7 +339,6 @@ end
         @test size(sink.buf, 1) == 48000
         @test size(sink.buf, 2) == num_channels
         @test rms(sink.buf) ≈ desired_rms * amp_mod  atol = 0.01
-
     end
 
     @testset "Dynamic Amplification" begin
@@ -362,8 +361,78 @@ end
         @test size(sink.buf, 2) == num_channels
         @test rms(sink.buf[1:24000]) ≈ desired_rms * amp_mod  atol = 0.01
         @test rms(sink.buf[24000:48000]) ≈ desired_rms atol = 0.01
+    end
+
+    @testset "Filtering" begin
+
+        desired_rms = 0.3
+        amp_mod = 0.1
+        for num_channels = 1:2
+
+            @testset "Channels: $num_channels" begin
+
+                source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+                sink = DummySampleSink(Float64, Fs, num_channels)
+
+                lower_bound = 1000
+                upper_bound = 4000
+
+                responsetype = Bandpass(lower_bound, upper_bound; fs=Fs)
+                designmethod = Butterworth(14)
+                zpg = digitalfilter(responsetype, designmethod)
+                f1 = DSP.Filters.DF2TFilter(zpg)
+                f2 = DSP.Filters.DF2TFilter(zpg)
+                filters = [f1]
+                if num_channels == 2; filters = [filters[1], f2]; end
+                bandpass = AuditoryStimuli.Filter(filters)
+
+                for idx = 1:500
+                    @pipe read(source, 0.01u"s") |> modify(bandpass, _) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000 * 5
+                @test size(sink.buf, 2) == num_channels
+
+                for chan = 1:num_channels
+
+                    spec = welch_pgram(sink.buf[:, chan], 12000, fs=Fs)
+
+                    val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                    val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 500)))
+                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 10
+
+                    val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                    val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
+                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 10
+                end
+
+                # Test turning filter off
+                setproperty!(bandpass, :enable, false)
+
+                for idx = 1:500
+                    @pipe read(source, 0.01u"s") |> modify(bandpass, _) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000 * 10
+                @test size(sink.buf, 2) == num_channels
+
+                for chan = 1:num_channels
+
+                    spec = welch_pgram(sink.buf[48000* 5:48000*10, chan], 12000, fs=Fs)
+
+                    val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                    val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 500)))
+                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) < 3
+
+                    val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                    val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
+                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) < 3
+                end
+
+
+            end
+        end
 
 
     end
+
 end
 

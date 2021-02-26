@@ -25,13 +25,14 @@ attenuated_sound = write(amplify, original_sound)
 mutable struct Filter
     filter::Array{DSP.DF2TFilter, 1}  # Filter object
     enable::Bool
+    num_filters::Int
 end
 function Filter(filters::Any)
-    AuditoryStimuli.Filter(filters, true)
+    AuditoryStimuli.Filter(filters, true, length(filters))
 end
 function modify(sink::Filter, buf)
     if sink.enable
-        for idx in 1:2
+        for idx in 1:sink.num_filters
             buf.data[:, idx] = DSP.filt(sink.filter[idx], buf.data[:, idx])
         end
     end
