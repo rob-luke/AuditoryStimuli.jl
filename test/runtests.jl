@@ -8,8 +8,10 @@ using Plots
 using Unitful
 using SampledSignals
 using Images
+using Pipe
 
 Fs = 48000
+
 
 @testset "Auditory Stimuli" begin
 
@@ -295,3 +297,73 @@ Fs = 48000
         end
     end
 end
+
+
+# =======================
+# Stream Processing
+# =======================
+
+
+@testset "Stream Processing" begin
+
+    @testset "Input / Output" begin
+
+        desired_rms = 0.3
+        for num_channels = 1:2
+            for frames = [100, 50, 20]
+                source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+                sink = DummySampleSink(Float64, 48000, num_channels)
+                for idx = 1:frames
+                    @pipe read(source, 1.0u"s"/frames) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000
+                @test size(sink.buf, 2) == num_channels
+                @test rms(sink.buf) ≈ desired_rms  atol = 0.01
+            end
+        end
+    end
+
+    @testset "Static Amplification" begin
+
+        desired_rms = 0.3
+        amp_mod = 0.1
+        num_channels = 1
+
+        source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+        sink = DummySampleSink(Float64, 48000, num_channels)
+        amp = Amplification(amp_mod, amp_mod, 0.005)
+
+        for idx = 1:100
+            @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
+        end
+        @test size(sink.buf, 1) == 48000
+        @test size(sink.buf, 2) == num_channels
+        @test rms(sink.buf) ≈ desired_rms * amp_mod  atol = 0.01
+
+    end
+
+    @testset "Dynamic Amplification" begin
+
+        desired_rms = 0.3
+        amp_mod = 0.1
+        num_channels = 1
+
+        source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+        sink = DummySampleSink(Float64, 48000, num_channels)
+        amp = Amplification(amp_mod, amp_mod, 0.5)
+
+        for idx = 1:100
+            if idx == 50
+                setproperty!(amp, :target_amplification, 1.0)
+            end
+            @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
+        end
+        @test size(sink.buf, 1) == 48000
+        @test size(sink.buf, 2) == num_channels
+        @test rms(sink.buf[1:24000]) ≈ desired_rms * amp_mod  atol = 0.01
+        @test rms(sink.buf[24000:48000]) ≈ desired_rms atol = 0.01
+
+
+    end
+end
+

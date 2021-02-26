@@ -26,6 +26,7 @@ export  bandpass_noise,
         NoiseSource,
         CorrelatedNoiseSource,
         HarmonicComplex,
+        DummySampleSink,
         Amplification,
         samplerate,
         modify
@@ -41,6 +42,7 @@ include("Plotting.jl")
 include("SignalGenerators/NoiseSource.jl")
 include("SignalGenerators/CorrelatedNoiseSource.jl")
 include("SignalGenerators/HarmonicComplex.jl")
+include("SignalGenerators/DummySampleSink.jl")
 
 # #########################################
 # #####  Signal Modifiers
