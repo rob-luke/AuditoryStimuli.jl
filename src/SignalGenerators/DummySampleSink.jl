@@ -21,3 +21,17 @@ function SampledSignals.unsafe_write(sink::DummySampleSink, buf::Array,
 
     framecount
 end
+
+function PlotSpectroTemporal(x::AuditoryStimuli.DummySampleSink; 
+                             figure_size::Tuple=(950, 450), 
+                             window = hamming,
+                             amplitude_limits = nothing,
+                             power_limits = nothing,
+                             time_limits = nothing,
+                             frequency_limits = [0, 1500],
+                             correlation_annotate = true)
+
+    PlotSpectroTemporal(x.buf, x.samplerate, figure_size = figure_size, window = window, amplitude_limits = amplitude_limits, 
+                        time_limits = time_limits, frequency_limits = frequency_limits, correlation_annotate = correlation_annotate)
+
+end

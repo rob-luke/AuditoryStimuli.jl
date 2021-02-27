@@ -3,7 +3,7 @@
 This example demonstrates how to stream audio and apply real-time
 signal processing to the signal.
 
-Real-time processing consist of a source, zero or more modifiers, and a sink.
+Real-time processing consists of a source, zero or more modifiers, and a sink.
 Sources generate the raw signal.
 Modifiers alter the signal.
 Sinks are a destination for the signals, typically a sound card, but in this example we use a buffer.
@@ -11,7 +11,7 @@ Sinks are a destination for the signals, typically a sound card, but in this exa
 First the required packages are loaded and the sample rate and number of audio channels is specified.
 
 ```@example realtime
-using AuditoryStimuli, Unitful, Plots, Pipe
+using AuditoryStimuli, Unitful, Plots, Pipe, DSP
 
 sample_rate = 48000
 audio_channels = 2;
@@ -57,7 +57,9 @@ nothing # hide
 
 ## Run the real-time audio pipeline
 
-We will now read from the noise source in 1/100th second frames.
+Audio is typically processed in small chunks of samples called frames.
+Here we request a frame from the noise source with length 1/100th of a second,
+or 480 samples.
 This is then passed through the signal amplifier,
 then sent to the sink.
 
@@ -68,40 +70,85 @@ end
 ```
 
 
-## Verify the output
+## Verify processing was correctly applied
 
 ```@example realtime
 plot(sink.buf)
 ```
 
-Next we can modify the amplification 
+
+## Apply a filter modifier
+
+A filter can also be applied to the data as a modifier.
+The filter also maintains its state, so can be used in real time processing.
+Below a bandpass filter is designed, for more details on filter design
+using the DSP package see: https://docs.juliadsp.org/stable/filters/
+
+
 
 ```@example realtime
-setproperty!(amp, :target_amplification, 0.5)
+responsetype = Bandpass(500, 4000; fs=48000)
+designmethod = Butterworth(4)
+zpg = digitalfilter(responsetype, designmethod)
 nothing # hide
 ```
 
-and push another 2 seconds through
-the pipeline.
+Once the filter is specified as a zero pole gain representation
+two filters are instansiated using this specification.
+A filter must be generated for each channel of audio.
+These DSP.Filters are then passed in to the AuditoryStimuli filter object for further use.
 
 
 ```@example realtime
-for frame = 1:50
-    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
-end
-setproperty!(amp, :target_amplification, 1.0)
-for frame = 1:50
-    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
-end
-setproperty!(amp, :target_amplification, 0.0)
-for frame = 1:50
-    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
+f_left = DSP.Filters.DF2TFilter(zpg)
+f_right = DSP.Filters.DF2TFilter(zpg)
+bandpass = AuditoryStimuli.Filter([f_left, f_right])
+nothing # hide
+```
+
+Once the filters are designed and placed in an AuditoryStimule.Filter object they can
+be used just like any other modifier.
+Below the filer is applied to 1 second of audio in 1/100th second frames.
+
+```@example realtime
+for frame = 1:100
+    @pipe read(source, 0.01u"s") |> modify(amp, _) |> modify(bandpass, _) |> write(sink, _)
 end
 ```
 
-Next
+## Modifying modifier parameters
+
+The parameters of modifiers can be varied at any time.
+Below the target amplification is set to zero to ramp off the signal.
+
+```@example realtime
+ setproperty!(amp, :target_amplification, 0.0)
+for frame = 1:20
+    @pipe read(source, 0.01u"s") |> modify(amp, _) |> modify(bandpass, _) |> write(sink, _)
+end
+ nothing # hide
+```
+
+## Verify output
+
+The entire signal (both the amplification, then the filtering) can be viewed
+using the convenience plotting function below.
+We observe that the signal is ramped on due to the amplification modifier.
+We can then see that at 1 second the spectral content of the signal was modified.
+And finally the signal is ramped off.
 
 
 ```@example realtime
-plot(sink.buf)
+PlotSpectroTemporal(sink, figure_size=(800, 400), frequency_limits = [0, 8000])
 ```
+
+
+## Other tips
+
+This example demonstrates the basics of real-time signal processing with this package.
+For a real application the following considerations may be required:
+* Running the audio stream in its own thread so you can process user input or run other code in parallel.
+    This is easily accomplised using `@spawn`, see: [example](https://github.com/rob-luke/AuditoryStimuli.jl/pull/21/files#diff-74e065fd2058f67e28f1771eb9cd167dcab282308ed048ab5997f8c1e928b4bfR79)
+* Enable or disable processing rather than modifying the pipeline.
+    Each modifier has an enable flag so that it can be disabled,
+    when disabled the signal is simply passed through and not modified.
