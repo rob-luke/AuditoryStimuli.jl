@@ -35,3 +35,16 @@ function PlotSpectroTemporal(x::AuditoryStimuli.DummySampleSink;
                         time_limits = time_limits, frequency_limits = frequency_limits, correlation_annotate = correlation_annotate)
 
 end
+
+
+function plot(x::AuditoryStimuli.DummySampleSink,
+        figure_size::Tuple=(800, 300))
+
+    t = 1:size(x.buf, 1) 
+    t = t ./ x.samplerate
+
+    plot(t, x.buf, size = figure_size, xlab = "Time (s)", ylab = "Amplitude")
+    
+end
+
+                              

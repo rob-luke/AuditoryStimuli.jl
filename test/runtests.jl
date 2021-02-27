@@ -295,6 +295,8 @@ Fs = 48000
         @pipe read(source, 3.0u"s"/frames) |>  write(sink, _)
         p = PlotSpectroTemporal(sink)
         @test isa(p, Plots.Plot) == true
+        p = plot(sink)
+        @test isa(p, Plots.Plot) == true
 
         end
     end
@@ -337,10 +339,10 @@ end
             sink = DummySampleSink(Float64, 48000, num_channels)
             amp = Amplification(amp_mod, amp_mod, 0.005)
 
-            for idx = 1:100
+            for idx = 1:200
                 @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
             end
-            @test size(sink.buf, 1) == 48000
+            @test size(sink.buf, 1) == 96000
             @test size(sink.buf, 2) == num_channels
             @test rms(sink.buf) ≈ desired_rms * amp_mod  atol = 0.01
         end
@@ -351,16 +353,16 @@ end
             sink = DummySampleSink(Float64, 48000, num_channels)
             amp = Amplification(amp_mod, amp_mod, 0.5)
 
-            for idx = 1:100
-                if idx == 50
+            for idx = 1:200
+                if idx == 100
                     setproperty!(amp, :target_amplification, 1.0)
                 end
                 @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
             end
-            @test size(sink.buf, 1) == 48000
+            @test size(sink.buf, 1) == 96000
             @test size(sink.buf, 2) == num_channels
-            @test rms(sink.buf[1:24000]) ≈ desired_rms * amp_mod  atol = 0.01
-            @test rms(sink.buf[24000:48000]) ≈ desired_rms atol = 0.01
+            @test rms(sink.buf[1:48000]) ≈ desired_rms * amp_mod  atol = 0.01
+            @test rms(sink.buf[48000:96000]) ≈ desired_rms atol = 0.01
         end
     end
 

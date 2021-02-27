@@ -23,7 +23,17 @@ default(size=(800, 300)) # hide
 
 ## Set up the signal pipeline components
 
-First a sink is generated.
+First we need a source.
+Here we use a simple white noise source and we specify
+the type of data we want to work with (Floats),
+the sample rate, number of channels, and the RMS of each channel.
+
+```@example realtime
+source = NoiseSource(Float64, sample_rate, audio_channels, source_rms)
+nothing # hide
+```
+
+A sink is also required.
 This would typically be a sound card, but that is not possible on a web site.
 Instead, for this website example a dummy sink is used, which simply saves the sample to a buffer.
 
@@ -31,23 +41,19 @@ Instead, for this website example a dummy sink is used, which simply saves the s
 sink = DummySampleSink(Float64, sample_rate, audio_channels)
 
 # But on a real system you would use something like
-# a = PortAudio.devices()
-# sink = PortAudioStream(a[3], 0, 2)
-```
-
-We also need a source.
-Here we use a simple white noise source.
-
-```@example realtime
-source = NoiseSource(Float64, sample_rate, audio_channels, source_rms)
-nothing # hide
+# devices = PortAudio.devices()
+# println(devices)
+# sink = PortAudioStream(devices[3], sample_rate, audio_channels)
 ```
 
 And we will apply one signal modifier.
-The first modifier adjusts the amplitude of the signal.
-We want the signal to ramp from silent to full intensity,
-so we set the initial value to 0.0 and the target value to 1.0,
-and the maximum change per frame to 0.01.
+This signal modifier simply adjusts the amplitude of the signal
+with a linear scaling.
+We specify the desired linear amplification to be 1.0, so no modification to the amplitude.
+However, we do not want the signal to jump from silent to full intensity,
+so we specify the initial amplitude as 0 (silent) and set the maximum increase per frame to be
+0.05.
+This will ramp the signal from silent to full intensity.
 
 ```@example realtime
 amp = Amplification(1.0, 0.0, 0.05)
@@ -73,7 +79,7 @@ end
 ## Verify processing was correctly applied
 
 ```@example realtime
-plot(sink.buf)
+plot(sink)
 ```
 
 
@@ -82,7 +88,7 @@ plot(sink.buf)
 A filter can also be applied to the data as a modifier.
 The filter also maintains its state, so can be used in real time processing.
 Below a bandpass filter is designed, for more details on filter design
-using the DSP package see: https://docs.juliadsp.org/stable/filters/
+using the DSP package see [this documentation](https://docs.juliadsp.org/stable/filters/).
 
 
 
@@ -122,7 +128,7 @@ The parameters of modifiers can be varied at any time.
 Below the target amplification is set to zero to ramp off the signal.
 
 ```@example realtime
- setproperty!(amp, :target_amplification, 0.0)
+setproperty!(amp, :target_amplification, 0.0)
 for frame = 1:20
     @pipe read(source, 0.01u"s") |> modify(amp, _) |> modify(bandpass, _) |> write(sink, _)
 end
