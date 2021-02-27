@@ -290,6 +290,12 @@ Fs = 48000
         p = PlotSpectroTemporal(im, 48000)
         @test isa(p, Plots.Plot) == true
 
+        source = NoiseSource(Float64, 48000, 2, 0.1)
+        sink = DummySampleSink(Float64, 48000, 2)
+        @pipe read(source, 3.0u"s"/frames) |>  write(sink, _)
+        p = PlotSpectroTemporal(sink)
+        @test isa(p, Plots.Plot) == true
+
         end
     end
 end
