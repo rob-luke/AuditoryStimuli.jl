@@ -1,14 +1,14 @@
 # Realtime Audio Processing
 
-Here we demonstrate how to stream audio and apply modifications to the signal.
-We will vary the amplitude of the signal and apply a filter during a limited time window.
+This example demonstrates how to stream audio and apply real-time
+signal processing to the signal.
 
-The real-time processing consist of a source, modifiers, and a sink.
+Real-time processing consist of a source, zero or more modifiers, and a sink.
 Sources generate the raw signal.
-Modifiers alter the signal they are applied to.
+Modifiers alter the signal.
 Sinks are a destination for the signals, typically a sound card, but in this example we use a buffer.
 
-First we load the required packages and specify the sample rate and number of audio channels.
+First the required packages are loaded and the sample rate and number of audio channels is specified.
 
 ```@example realtime
 using AuditoryStimuli, Unitful, Plots, Pipe
@@ -16,17 +16,19 @@ using AuditoryStimuli, Unitful, Plots, Pipe
 sample_rate = 48000
 audio_channels = 2;
 source_rms = 0.2
+
+default(size=(800, 300)) # hide
 ```
 
 
 ## Set up the signal pipeline components
 
-Next we open a connection with a sink.
+First a sink is generated.
 This would typically be a sound card, but that is not possible on a web site.
-Instead, for this website example we use a dummy sink.
+Instead, for this website example a dummy sink is used, which simply saves the sample to a buffer.
 
 ```@example realtime
-sink = DummySampleSink(Float64, sample_rate, num_channels)
+sink = DummySampleSink(Float64, sample_rate, audio_channels)
 
 # But on a real system you would use something like
 # a = PortAudio.devices()
@@ -37,7 +39,8 @@ We also need a source.
 Here we use a simple white noise source.
 
 ```@example realtime
-source = NoiseSource(Float64, Fs, num_channels, source_rms)
+source = NoiseSource(Float64, sample_rate, audio_channels, source_rms)
+nothing # hide
 ```
 
 And we will apply one signal modifier.
@@ -47,7 +50,8 @@ so we set the initial value to 0.0 and the target value to 1.0,
 and the maximum change per frame to 0.01.
 
 ```@example realtime
-amp = Amplification(0,0, 1.0, 0.01)
+amp = Amplification(1.0, 0.0, 0.05)
+nothing # hide
 ```
 
 
@@ -58,26 +62,46 @@ This is then passed through the signal amplifier,
 then sent to the sink.
 
 ```@example realtime
-println(size(sink.buf))
-for frame = 1:300
+for frame = 1:100
     @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
 end
-println(size(sink.buf))
 ```
 
 
 ## Verify the output
 
 ```@example realtime
-plot(sink.buf, size = (800, 300))
+plot(sink.buf)
 ```
 
-Next we can modify the amplification and push another 2 seconds through
-the pipeline.
+Next we can modify the amplification 
 
 ```@example realtime
-for frame = 1:200
+setproperty!(amp, :target_amplification, 0.5)
+nothing # hide
+```
+
+and push another 2 seconds through
+the pipeline.
+
+
+```@example realtime
+for frame = 1:50
+    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
+end
+setproperty!(amp, :target_amplification, 1.0)
+for frame = 1:50
+    @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
+end
+setproperty!(amp, :target_amplification, 0.0)
+for frame = 1:50
     @pipe read(source, 0.01u"s") |> modify(amp, _) |> write(sink, _)
 end
 ```
 
+Next
+
+
+```@example realtime
+plot(sink.buf)
+```
