@@ -1,25 +1,27 @@
 using DSP
 """
-    Filter(filter)
+    Filter(filters)
 
 Apply filter to the signal
 
 Inputs
 ------
-* `target_amplification` the desired linear amplification factor to be applied to signal.
-* `current_amplification` the linear amplification currently applied to signal.
-  Also used to specify the intial value for the process.
-* `amplification_step_change_limit` the maximum change in amplfication that can occur per frame.
+* `filters` array of DSP filter objects.
 
 Output
 ------
-* SampleBuf 
+* Filter object 
 
 Example
 -------
 ```julia
-amplify = Amplification(0.1, 0.0, 0.05)
-attenuated_sound = write(amplify, original_sound)
+using DSP
+responsetype = Bandpass(500, 4000; fs=48000)
+designmethod = Butterworth(4)
+zpg = digitalfilter(responsetype, designmethod)
+f_left = DSP.Filters.DF2TFilter(zpg)
+f_right = DSP.Filters.DF2TFilter(zpg)
+bandpass = AuditoryStimuli.Filter([f_left, f_right])
 ```
 """
 mutable struct Filter

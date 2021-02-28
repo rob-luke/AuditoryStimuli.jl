@@ -14,8 +14,8 @@ AuditoryStimuli
 ## Signal generators
 
 ```@docs
-CorrelatedNoiseSource
 NoiseSource
+CorrelatedNoiseSource
 HarmonicComplex
 ```
 
