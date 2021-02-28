@@ -23,6 +23,7 @@ HarmonicComplex
 
 ```@docs
 Amplification
+AuditoryStimuli.Filter
 ```
 
 
