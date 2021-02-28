@@ -9,11 +9,13 @@ Modifiers alter the signal.
 Sinks are a destination for the signals, typically a sound card, but in this example we use a buffer.
 
 First the required packages are loaded and the sample rate and number of audio channels is specified.
+This package makes extensive use of units to minimise the chance of coding mistakes,
+below the sample rate is specified in the unit of kHz.
 
 ```@example realtime
 using AuditoryStimuli, Unitful, Plots, Pipe, DSP
 
-sample_rate = 48000
+sample_rate = 48u"kHz"
 audio_channels = 2;
 source_rms = 0.2
 
@@ -51,12 +53,12 @@ This signal modifier simply adjusts the amplitude of the signal
 with a linear scaling.
 We specify the desired linear amplification to be 1.0, so no modification to the amplitude.
 However, we do not want the signal to jump from silent to full intensity,
-so we specify the initial amplitude as 0 (silent) and set the maximum increase per frame to be
+so we specify the current value of the amplitude as 0 (silent) and set the maximum increase per frame to be
 0.05.
 This will ramp the signal from silent to full intensity.
 
 ```@example realtime
-amp = Amplification(1.0, 0.0, 0.05)
+amp = Amplification(current=0.0, target=1.0, change_limit=0.05)
 nothing # hide
 ```
 
@@ -128,7 +130,7 @@ The parameters of modifiers can be varied at any time.
 Below the target amplification is set to zero to ramp off the signal.
 
 ```@example realtime
-setproperty!(amp, :target_amplification, 0.0)
+setproperty!(amp, :target, 0.0)
 for frame = 1:20
     @pipe read(source, 0.01u"s") |> modify(amp, _) |> modify(bandpass, _) |> write(sink, _)
 end

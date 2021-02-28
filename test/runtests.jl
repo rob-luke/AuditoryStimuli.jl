@@ -325,6 +325,11 @@ end
                 @test rms(sink.buf) ≈ desired_rms  atol = 0.01
             end
         end
+
+        source = NoiseSource(Float64, 96000u"Hz", 2, 0.1)
+        @test source.samplerate == 96000
+        source = NoiseSource(Float64, 96u"kHz", 2)
+        @test source.samplerate == 96000
     end
 
     @testset "Amplification" begin
@@ -351,11 +356,11 @@ end
 
             source = NoiseSource(Float64, Fs, num_channels, desired_rms)
             sink = DummySampleSink(Float64, 48000, num_channels)
-            amp = Amplification(amp_mod, amp_mod, 0.5)
+            amp = Amplification(target=amp_mod, current=amp_mod, change_limit=0.5)
 
             for idx = 1:200
                 if idx == 100
-                    setproperty!(amp, :target_amplification, 1.0)
+                    setproperty!(amp, :target, 1.0)
                 end
                 @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
             end

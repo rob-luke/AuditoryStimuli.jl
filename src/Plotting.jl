@@ -86,11 +86,3 @@ function vector_pow2db(a::Vector)
     return a
 end;
 
-function plot(x::SampledSignals.SampleBuf; 
-        figure_size::Tuple=(600, 300))
-
-    t = 1:size(x.data, 1) 
-    t = t ./ x.samplerate
-
-    plot(t, x.data, size = figure_size)
-end

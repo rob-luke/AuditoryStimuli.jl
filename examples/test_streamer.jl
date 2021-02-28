@@ -66,36 +66,38 @@ end
 responsetype = Bandpass(500, 4000; fs=48000)
 designmethod = Butterworth(4)
 zpg = digitalfilter(responsetype, designmethod)
-f = DSP.Filters.DF2TFilter(zpg)
+f1 = DSP.Filters.DF2TFilter(zpg)
+f2 = DSP.Filters.DF2TFilter(zpg)
 
 
 # Set up the audio pathway objects
 soundcard = get_soundcard_stream()
 noise_source = NoiseSource(Float64, 48000, 2, 0.2)
 amplify = Amplification(0.1, 0.01, 0.005)
-bandpass = AuditoryStimuli.Filter([f, f])
+bandpass = AuditoryStimuli.Filter([f1, f2])
 
 # Instansiate the audio stream in its own thread
  noise_stream = Threads.@spawn begin
-    while amplify.current_amplification > 0.001
+    while amplify.current > 0.001
         @pipe read(noise_source, 0.01u"s") |> modify(amplify, _) |> modify(bandpass, _) |> write(soundcard, _)
     end
 end
 
 # Main function
-while amplify.current_amplification > 0.001
+while amplify.current> 0.001
 
     a = query_prompt("Select amplification. 1(quiet) to 9(loud), or q(quit)",  Float64)
 
     if a isa Number
         # Update the target amplifcation
-        setproperty!(amplify, :target_amplification, a / 10.0)
+        setproperty!(amplify, :target, a / 10.0)
     elseif a == "f"
+        # Enable or disable the band pass filter
         setproperty!(bandpass, :enable, !bandpass.enable)
     else
         # Ramp the amplifcation to zero and then exit
-        setproperty!(amplify, :target_amplification, 0.0)
-        while amplify.current_amplification > 0.001; sleep(0.2); end
+        setproperty!(amplify, :target, 0.0)
+        while amplify.current > 0.001; sleep(0.2); end
         println("Shuting down")
     end
 end

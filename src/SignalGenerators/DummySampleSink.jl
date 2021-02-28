@@ -5,8 +5,13 @@ mutable struct DummySampleSink{T} <: SampleSink
     buf::Array{T, 2}
 end
 
-DummySampleSink(eltype, samplerate, channels) =
+DummySampleSink(eltype, samplerate::Number, channels::Int) =
     DummySampleSink{eltype}(samplerate, Array{eltype}(undef, 0, channels))
+function DummySampleSink(eltype, samplerate::Union{typeof(1u"Hz"), typeof(1u"kHz")}, 
+                         nchannels::Int)
+    samplerate = ustrip(uconvert(u"Hz", samplerate))
+    DummySampleSink(eltype, samplerate, nchannels)
+end
 
 samplerate(sink::DummySampleSink) = sink.samplerate
 nchannels(sink::DummySampleSink) = size(sink.buf, 2)
@@ -22,29 +27,21 @@ function SampledSignals.unsafe_write(sink::DummySampleSink, buf::Array,
     framecount
 end
 
-function PlotSpectroTemporal(x::AuditoryStimuli.DummySampleSink; 
-                             figure_size::Tuple=(950, 450), 
-                             window = hamming,
-                             amplitude_limits = nothing,
-                             power_limits = nothing,
-                             time_limits = nothing,
-                             frequency_limits = [0, 1500],
-                             correlation_annotate = true)
 
-    PlotSpectroTemporal(x.buf, x.samplerate, figure_size = figure_size, window = window, amplitude_limits = amplitude_limits, 
-                        time_limits = time_limits, frequency_limits = frequency_limits, correlation_annotate = correlation_annotate)
+# ######################
+# Plotting
+# ######################
 
-end
+PlotSpectroTemporal(x::AuditoryStimuli.DummySampleSink; kwargs...) = PlotSpectroTemporal(x.buf, x.samplerate; kwargs...)
 
-
-function plot(x::AuditoryStimuli.DummySampleSink,
-        figure_size::Tuple=(800, 300))
+function plot(x::AuditoryStimuli.DummySampleSink;
+                xlab::String = "Time (s)",
+                ylab::String = "Amplitude",
+                kwargs...)
 
     t = 1:size(x.buf, 1) 
     t = t ./ x.samplerate
 
-    plot(t, x.buf, size = figure_size, xlab = "Time (s)", ylab = "Amplitude")
-    
+    plot(t, x.buf, xlab = xlab, ylab = ylab; kwargs...)
 end
 
-                              
