@@ -27,6 +27,7 @@ mutable struct Amplification
     change_limit::Float64     # Maximum change in scaling per frame
     enable::Bool
 end
+Amplification(a, b, c) = Amplification(a, b, c, true)
 function Amplification(;target::Number,
                         current::Number,
                         change_limit::Number)
