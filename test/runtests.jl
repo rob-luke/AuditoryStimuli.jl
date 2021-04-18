@@ -8,8 +8,10 @@ using Plots
 using Unitful
 using SampledSignals
 using Images
+using Pipe
 
 Fs = 48000
+
 
 @testset "Auditory Stimuli" begin
 
@@ -109,7 +111,6 @@ Fs = 48000
     @testset "Modifier Functions" begin
     # ==================================
 
-    
         @testset "Filter Signals" begin
 
             @testset "Bandpass Butterworth" begin
@@ -207,7 +208,6 @@ Fs = 48000
                     mn = amplitude_modulate(bn, 40, Fs)
                     im = ITD_modulate(mn, 8, 48, -48, Fs)
                 end
-                
             end
 
         end
@@ -255,10 +255,8 @@ Fs = 48000
                     @test rms(bn[end-Fs:end, :]) < rms(bn[2*Fs:3*Fs, :])
                 end
             end
-
         end
 
-        
         @testset "ITD" begin
 
             for desired_itd = -100:10:100
@@ -292,6 +290,153 @@ Fs = 48000
         p = PlotSpectroTemporal(im, 48000)
         @test isa(p, Plots.Plot) == true
 
+        source = NoiseSource(Float64, 48000, 2, 0.1)
+        sink = DummySampleSink(Float64, 48000, 2)
+        @pipe read(source, 3.0u"s"/frames) |>  write(sink, _)
+        p = PlotSpectroTemporal(sink)
+        @test isa(p, Plots.Plot) == true
+        p = plot(sink)
+        @test isa(p, Plots.Plot) == true
+
         end
     end
 end
+
+
+# =======================
+# Stream Processing
+# =======================
+
+
+@testset "Stream Processing" begin
+
+    @testset "Input / Output" begin
+
+        desired_rms = 0.3
+        for num_channels = 1:2
+            for frames = [100, 50, 20]
+                source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+                sink = DummySampleSink(Float64, 48000, num_channels)
+                for idx = 1:frames
+                    @pipe read(source, 1.0u"s"/frames) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000
+                @test size(sink.buf, 2) == num_channels
+                @test rms(sink.buf) ≈ desired_rms  atol = 0.01
+            end
+        end
+
+        source = NoiseSource(Float64, 96000u"Hz", 2, 0.1)
+        @test source.samplerate == 96000
+        source = NoiseSource(Float64, 96u"kHz", 2)
+        @test source.samplerate == 96000
+    end
+
+    @testset "Amplification" begin
+
+        desired_rms = 0.3
+        amp_mod = 0.1
+        num_channels = 1
+
+        @testset "Static" begin
+
+            source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+            sink = DummySampleSink(Float64, 48000, num_channels)
+            amp = Amplification(amp_mod, amp_mod, 0.005)
+
+            for idx = 1:200
+                @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
+            end
+            @test size(sink.buf, 1) == 96000
+            @test size(sink.buf, 2) == num_channels
+            @test rms(sink.buf) ≈ desired_rms * amp_mod  atol = 0.01
+        end
+
+        @testset "Dynamic" begin
+
+            source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+            sink = DummySampleSink(Float64, 48000, num_channels)
+            amp = Amplification(target=amp_mod, current=amp_mod, change_limit=0.5)
+
+            for idx = 1:200
+                if idx == 100
+                    setproperty!(amp, :target, 1.0)
+                end
+                @pipe read(source, 0.01u"s") |> modify(amp, _) |>  write(sink, _)
+            end
+            @test size(sink.buf, 1) == 96000
+            @test size(sink.buf, 2) == num_channels
+            @test rms(sink.buf[1:48000]) ≈ desired_rms * amp_mod  atol = 0.01
+            @test rms(sink.buf[48000:96000]) ≈ desired_rms atol = 0.01
+        end
+    end
+
+    @testset "Filtering" begin
+
+        desired_rms = 0.3
+        amp_mod = 0.1
+        for num_channels = 1:2
+
+            @testset "Channels: $num_channels" begin
+
+                source = NoiseSource(Float64, Fs, num_channels, desired_rms)
+                sink = DummySampleSink(Float64, Fs, num_channels)
+
+                lower_bound = 1000
+                upper_bound = 4000
+
+                responsetype = Bandpass(lower_bound, upper_bound; fs=Fs)
+                designmethod = Butterworth(14)
+                zpg = digitalfilter(responsetype, designmethod)
+                f1 = DSP.Filters.DF2TFilter(zpg)
+                f2 = DSP.Filters.DF2TFilter(zpg)
+                filters = [f1]
+                if num_channels == 2; filters = [filters[1], f2]; end
+                bandpass = AuditoryStimuli.Filter(filters)
+
+                for idx = 1:500
+                    @pipe read(source, 0.01u"s") |> modify(bandpass, _) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000 * 5
+                @test size(sink.buf, 2) == num_channels
+
+                for chan = 1:num_channels
+
+                    spec = welch_pgram(sink.buf[:, chan], 12000, fs=Fs)
+
+                    val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                    val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 500)))
+                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) > 10
+
+                    val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                    val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
+                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) > 10
+                end
+
+                # Test turning filter off
+                setproperty!(bandpass, :enable, false)
+
+                for idx = 1:1500
+                    @pipe read(source, 0.01u"s") |> modify(bandpass, _) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 48000 * 20
+                @test size(sink.buf, 2) == num_channels
+
+                for chan = 1:num_channels
+
+                    spec = welch_pgram(sink.buf[48000* 5:48000*20, chan], 12000, fs=Fs)
+
+                    val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
+                    val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 500)))
+                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) < 4
+
+                    val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
+                    val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
+                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) < 4
+                end
+            end
+        end
+    end
+
+end
+

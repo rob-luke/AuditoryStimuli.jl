@@ -14,9 +14,16 @@ AuditoryStimuli
 ## Signal generators
 
 ```@docs
-CorrelatedNoiseSource
 NoiseSource
+CorrelatedNoiseSource
 HarmonicComplex
+```
+
+## Online signal modifiers
+
+```@docs
+Amplification
+AuditoryStimuli.Filter
 ```
 
 

@@ -11,8 +11,10 @@ using Random
 using Logging
 using FFTW
 using Unitful
+using Plots
 
 import SampledSignals: nchannels, samplerate, unsafe_read!
+import Plots: plot
 
 export  bandpass_noise,
         bandpass_filter,
@@ -26,7 +28,11 @@ export  bandpass_noise,
         NoiseSource,
         CorrelatedNoiseSource,
         HarmonicComplex,
-        samplerate
+        DummySampleSink,
+        Amplification,
+        samplerate,
+        modify,
+        plot
 
 
 include("Plotting.jl")
@@ -36,9 +42,17 @@ include("Plotting.jl")
 # #####  Signal Generation
 # #########################################
 
-include("SignalGen/NoiseSource.jl")
-include("SignalGen/CorrelatedNoiseSource.jl")
-include("SignalGen/HarmonicComplex.jl")
+include("SignalGenerators/NoiseSource.jl")
+include("SignalGenerators/CorrelatedNoiseSource.jl")
+include("SignalGenerators/HarmonicComplex.jl")
+include("SignalGenerators/DummySampleSink.jl")
+
+# #########################################
+# #####  Signal Modifiers
+# #########################################
+
+include("SignalModifiers/Amplification.jl")
+include("SignalModifiers/BandpassFilter.jl")
 
 
 """
