@@ -428,11 +428,11 @@ end
 
                     val, idx_lb = findmin(abs.(freq(spec) .- lower_bound))
                     val, idx_bl = findmin(abs.(freq(spec) .- (lower_bound - 500)))
-                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) < 4
+                    @test (amp2db(power(spec)[idx_lb]) - amp2db(power(spec)[idx_bl])) < 6
 
                     val, idx_ub = findmin(abs.(freq(spec) .- upper_bound))
                     val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
-                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) < 4
+                    @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) < 6
                 end
             end
         end
