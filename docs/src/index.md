@@ -12,3 +12,8 @@ To install this package enter the package manager by pressing `]` at the julia p
 ```julia
 pkg> add AuditoryStimuli
 ```
+
+
+### Overview
+
+This package provides a framework for generating audio in real time. It can also be used to generate audio offline. Tutorials and examples are provided for both approaches.
