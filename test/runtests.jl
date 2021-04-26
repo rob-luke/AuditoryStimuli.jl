@@ -438,5 +438,22 @@ end
         end
     end
 
+    @testset "Amplitude Modulation" begin
+
+        num_channels = 1
+
+        source = NoiseSource(Float64, Fs, num_channels)
+        sink = DummySampleSink(Float64, 48000, num_channels)
+        am = AmplitudeModulation(10)
+
+        for idx = 1:100
+            @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+        end
+        @test size(sink.buf, 1) == 48000
+        @test size(sink.buf, 2) == num_channels
+
+
+    end
+
 end
 
