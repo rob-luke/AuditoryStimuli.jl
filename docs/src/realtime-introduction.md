@@ -151,12 +151,13 @@ PlotSpectroTemporal(sink, figure_size=(800, 400), frequency_limits = [0, 8000])
 ```
 
 
+
 ## Other tips
 
 This example demonstrates the basics of real-time signal processing with this package.
 For a real application the following considerations may be required:
 * Running the audio stream in its own thread so you can process user input or run other code in parallel.
-    This is easily accomplised using `@spawn`, see: [example](https://github.com/rob-luke/AuditoryStimuli.jl/pull/21/files#diff-74e065fd2058f67e28f1771eb9cd167dcab282308ed048ab5997f8c1e928b4bfR79)
+    This is easily accomplised using `@spawn`, see: [example](https://github.com/rob-luke/AuditoryStimuli.jl/blob/master/examples/test_streamer.jl).
 * Enable or disable processing rather than modifying the pipeline.
     Each modifier has an enable flag so that it can be disabled,
     when disabled the signal is simply passed through and not modified.

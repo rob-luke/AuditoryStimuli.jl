@@ -8,8 +8,12 @@ makedocs(
     authors  = "Robert Luke",
     pages = [
         "Home" => "index.md",
-        "Examples - Offline" => "examples.md",
-        "Examples - Realtime " => "examples-realtime.md",
+        "Introduction / Tutorial" => "realtime-introduction.md",
+        "Examples" => Any[
+            "AM Noise" => "example-ssr.md",
+            "Harmonic Stacks" => "example-hs.md",
+        ],
+        "Offline Audio Generation" => "offline-introduction.md",
         "API" => "api.md"
     ]
 )

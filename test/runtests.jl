@@ -13,7 +13,7 @@ using Pipe
 Fs = 48000
 
 
-@testset "Auditory Stimuli" begin
+@testset "Offline Stimuli" begin
 
 
     @testset "Generator Functions" begin
@@ -308,7 +308,7 @@ end
 # =======================
 
 
-@testset "Stream Processing" begin
+@testset "Online Stimuli" begin
 
     @testset "Input / Output" begin
 
@@ -434,6 +434,71 @@ end
                     val, idx_bu = findmin(abs.(freq(spec) .- (upper_bound + 500)))
                     @test (amp2db(power(spec)[idx_ub]) - amp2db(power(spec)[idx_bu])) < 6
                 end
+            end
+        end
+    end
+
+    @testset "Amplitude Modulation" begin
+
+        for num_channels = 1:5
+
+            @testset "Channels: $num_channels" begin
+
+                source = NoiseSource(Float64, Fs, num_channels)
+                sink = DummySampleSink(Float64, 48000, num_channels)
+                am = AmplitudeModulation(10)
+
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                @test size(sink.buf, 1) == 4800
+                @test size(sink.buf, 2) == num_channels
+
+                start_mod = Statistics.sum(abs.(sink.buf[1:1000, :]))
+                mid_mod = Statistics.sum(abs.(sink.buf[2000:3000, :]))
+                end_mod = Statistics.sum(abs.(sink.buf[3800:4800, :]))
+
+                @test mid_mod > start_mod
+                @test mid_mod > end_mod
+            
+                # Test different ways of instanciating the modifier
+                am = AmplitudeModulation(10u"Hz")
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(10u"Hz", 0)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(10u"Hz", π)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(10u"Hz", π, 0)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(10u"Hz", π, 0.5)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(10u"Hz", π, 1.5)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(rate=3)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(phase=3)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+                am = AmplitudeModulation(depth=0.5)
+                for idx = 1:10
+                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
+                end
+
             end
         end
     end

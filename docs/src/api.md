@@ -24,13 +24,13 @@ HarmonicComplex
 ```@docs
 Amplification
 AuditoryStimuli.Filter
+AmplitudeModulation
 ```
 
 
-## Signal modifiers
+## Offline Signal modifiers
 
 ```@docs
-bandpass_noise
 bandpass_filter
 ramp_on
 ramp_off
@@ -44,5 +44,6 @@ ITD_modulate
 ## Plotting
 
 ```@docs
+Plot
 PlotSpectroTemporal
 ```

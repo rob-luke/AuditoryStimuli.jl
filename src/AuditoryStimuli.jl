@@ -30,6 +30,7 @@ export  bandpass_noise,
         HarmonicComplex,
         DummySampleSink,
         Amplification,
+        AmplitudeModulation,
         samplerate,
         modify,
         plot
@@ -53,6 +54,7 @@ include("SignalGenerators/DummySampleSink.jl")
 
 include("SignalModifiers/Amplification.jl")
 include("SignalModifiers/BandpassFilter.jl")
+include("SignalModifiers/Modulation.jl")
 
 
 """
