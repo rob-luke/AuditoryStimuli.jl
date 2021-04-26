@@ -150,6 +150,29 @@ And finally the signal is ramped off.
 PlotSpectroTemporal(sink, figure_size=(800, 400), frequency_limits = [0, 8000])
 ```
 
+## Other examples
+
+Modulation 
+```@example realtime
+using AuditoryStimuli, Unitful, Plots, Pipe, DSP
+
+sample_rate = 48u"kHz"
+audio_channels = 2;
+source_rms = 0.2
+
+source = NoiseSource(Float64, sample_rate, audio_channels, source_rms)
+sink = DummySampleSink(Float64, sample_rate, audio_channels)
+am = AmplitudeModulation(4, π, 1.5)
+
+for frame = 1:300
+    @pipe read(source, 0.01u"s") |> modify(am, _) |> write(sink, _)
+end
+
+plot(sink)
+
+```
+
+
 
 ## Other tips
 

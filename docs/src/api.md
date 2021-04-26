@@ -24,6 +24,7 @@ HarmonicComplex
 ```@docs
 Amplification
 AuditoryStimuli.Filter
+AmplitudeModulation
 ```
 
 
