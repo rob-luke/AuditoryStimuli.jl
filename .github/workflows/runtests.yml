@@ -24,6 +24,7 @@ jobs:
           - 'FFTW'
         version:
           - '1.5'
+          - '1'
         os:
           - ubuntu-latest
           - macOS-latest
