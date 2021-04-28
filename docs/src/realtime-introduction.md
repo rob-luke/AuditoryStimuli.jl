@@ -14,12 +14,13 @@ below the sample rate is specified in the unit of kHz.
 
 ```@example realtime
 using AuditoryStimuli, Unitful, Plots, Pipe, DSP
+using DisplayAs # hide
 
 sample_rate = 48u"kHz"
 audio_channels = 2;
 source_rms = 0.2
 
-default(size=(800, 300)) # hide
+default(size=(700, 300)) # hide
 ```
 
 
@@ -82,6 +83,7 @@ end
 
 ```@example realtime
 plot(sink)
+current() |> DisplayAs.PNG # hide
 ```
 
 
@@ -147,7 +149,8 @@ And finally the signal is ramped off.
 
 
 ```@example realtime
-PlotSpectroTemporal(sink, figure_size=(800, 400), frequency_limits = [0, 8000])
+PlotSpectroTemporal(sink, figure_size=(700, 400), frequency_limits = [0, 8000])
+current() |> DisplayAs.PNG # hide
 ```
 
 
