@@ -15,6 +15,7 @@ makedocs(
             "Bandpass Noise" => "example-bpnoise.md",
         ],
         "Offline Audio Generation" => "offline-introduction.md",
+        "Advanced Usage" => "advanced.md",
         "API" => "api.md"
     ]
 )

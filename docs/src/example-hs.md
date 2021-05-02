@@ -14,8 +14,9 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
-source = HarmonicComplex(Float64, 48000, collect(200:200:2400))
-amp = Amplification(current=1/20, target=1/20, change_limit=1)
+stack_frequencies = collect(200:200:2400)
+source = HarmonicComplex(Float64, 48000, stack_frequencies)
+amp = Amplification(current=1/length(stack_frequencies), target=1/length(stack_frequencies), change_limit=1)
 am = AmplitudeModulation(15)
 sink = DummySampleSink(Float64, 48u"kHz", 2)
 
@@ -42,12 +43,13 @@ using AuditoryStimuli, Unitful, Plots, WAV
 default(size=(700, 300)) # hide
 using DisplayAs # hide
 
-source = HarmonicComplex(Float64, 48000, collect(200:200:2400))
+stack_frequencies = collect(200:200:2400)
+source = HarmonicComplex(Float64, 48000, stack_frequencies)
 am = AmplitudeModulation(15)
 
 audio = read(source, 1.0u"s") 
 modulated_audio = modify(am, audio) 
 
 # Write the audio to disk as a wav file
-wavwrite(modulated_audio.data ./ 20, "harmonic-stack.wav",Fs=48000)
+wavwrite(modulated_audio.data ./ length(stack_frequencies), "harmonic-stack.wav",Fs=48000)
 ```

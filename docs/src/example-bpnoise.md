@@ -18,8 +18,8 @@ source = NoiseSource(Float64, 48u"kHz", 2, 0.2)
 sink = DummySampleSink(Float64, 48u"kHz", 2)
 
 # Design the filter
-responsetype = Bandpass(500, 4000; fs=48000)
-designmethod = Butterworth(4)
+responsetype = Bandpass(300, 700; fs=48000)
+designmethod = Butterworth(14)
 zpg = digitalfilter(responsetype, designmethod)
 f_left = DSP.Filters.DF2TFilter(zpg)
 f_right = DSP.Filters.DF2TFilter(zpg)
@@ -31,7 +31,7 @@ for frame = 1:100
 end
 
 # Validate the audio pipeline output
-PlotSpectroTemporal(sink, figure_size=(700, 400), frequency_limits = [0, 8000])
+PlotSpectroTemporal(sink, figure_size=(750, 400), frequency_limits = [0, 4000])
 current() |> DisplayAs.PNG # hide
 ```
 
@@ -41,7 +41,7 @@ current() |> DisplayAs.PNG # hide
 It is also possible to generate the audio in an offline (all in one step) manner. This may be useful for creating wav files for use in simpler experiments.
 
 ```@example offline
-using AuditoryStimuli, Unitful, Plots, WAV
+using AuditoryStimuli, Unitful, Plots, DSP, WAV
 default(size=(700, 300)) # hide
 using DisplayAs # hide
 
