@@ -10,10 +10,12 @@ makedocs(
         "Home" => "index.md",
         "Introduction / Tutorial" => "realtime-introduction.md",
         "Examples" => Any[
-            "AM Noise" => "example-ssr.md",
+            "Amplitude Modulated Noise" => "example-ssr.md",
             "Harmonic Stacks" => "example-hs.md",
+            "Bandpass Noise" => "example-bpnoise.md",
         ],
         "Offline Audio Generation" => "offline-introduction.md",
+        "Advanced Usage" => "advanced.md",
         "API" => "api.md"
     ]
 )
