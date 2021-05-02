@@ -19,7 +19,7 @@ It also provides high level convenience functions and examples for common stimul
 
 ## Documentation
 
-https://rob-luke.github.io/AuditoryStimuli.jl/dev
+https://rob-luke.github.io/AuditoryStimuli.jl
 
 
 ## Acknowledgements
