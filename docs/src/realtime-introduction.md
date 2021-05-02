@@ -1,7 +1,12 @@
 # Realtime Audio Processing
 
-This example demonstrates how to stream audio and apply real-time
-signal processing to the signal.
+Here the basics of real-time audio processing is introduced
+and how you can generate real time audio with this package.
+
+In real time audio processing it is common to process audio in small chunks of samples called frames.
+This is more efficent than procesing signals on a sample by sample basis.
+In this example we use a frame size of 1/100th of a second,
+or 480 samples when using a sample rate of 48 kHz.
 
 Real-time processing consists of a source, zero or more modifiers, and a sink.
 Sources generate the raw signal.
@@ -66,9 +71,7 @@ nothing # hide
 
 ## Run the real-time audio pipeline
 
-Audio is typically processed in small chunks of samples called frames.
-Here we request a frame from the noise source with length 1/100th of a second,
-or 480 samples.
+To run the pipeline we read a frame of audio.
 This is then passed through the signal amplifier,
 then sent to the sink.
 
