@@ -25,19 +25,15 @@ HarmonicComplex
 Amplification
 AuditoryStimuli.Filter
 AmplitudeModulation
+TimeDelay
 ```
 
 
 ## Offline Signal modifiers
 
 ```@docs
-bandpass_filter
 ramp_on
 ramp_off
-set_RMS
-set_ITD
-amplitude_modulate
-ITD_modulate
 ```
 
 
