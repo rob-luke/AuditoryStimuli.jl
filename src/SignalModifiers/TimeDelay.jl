@@ -1,5 +1,5 @@
 """
-    TimeDelay(channel, delay, trim_length, enable)
+    TimeDelay(channel, delay, enable, buffer)
 
 Delay the signal in specified channel.
 
@@ -7,7 +7,9 @@ Inputs
 ------
 * `channel` which channel should have a time delay applied.
 * `delay` delay to be applied in samples or unitful units.  
-* `trim_length` should the length of the extended channels be trimmed so that the output data is the same length as the input data. By default this is true, so the last samples of your signal may be removed.
+* `enable` should the modifier be enabled.
+* `buffer` initial values with which to pad the time delay.
+
 
 Output
 ------
@@ -17,7 +19,7 @@ Example
 -------
 ```julia
 itd = TimeDelay(2, 12)
-attenuated_sound = modify(itd, original_sound)
+sound_with_itd = modify(itd, original_sound)
 ```
 """
 Base.@kwdef mutable struct TimeDelay
