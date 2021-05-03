@@ -13,8 +13,9 @@ makedocs(
             "Amplitude Modulated Noise" => "example-ssr.md",
             "Harmonic Stacks" => "example-hs.md",
             "Bandpass Noise" => "example-bpnoise.md",
+            "Interaural Time Delay" => "example-itd.md",
+            "ITD Modulation" => "example-itmfr.md",
         ],
-        "Offline Audio Generation" => "offline-introduction.md",
         "Advanced Usage" => "advanced.md",
         "API" => "api.md"
     ]

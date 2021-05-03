@@ -1,8 +1,10 @@
 # Example: Amplitude Modulated Noise
 
-This common stimulus is used for determining hearing thresholds.
-
 In this example we geneate a white noise signal which is modualted at 40 Hz.
+These signals are commonly used to ellicit auditory steady-state responses [1].
+
+[1] Luke, R., Van Deun, L., Hofmann, M., Van Wieringen, A., & Wouters, J. (2015). Assessing temporal modulation sensitivity using electrically evoked auditory steady state responses. Hearing research, 324, 37-45.
+
 
 ### Realtime Example
 

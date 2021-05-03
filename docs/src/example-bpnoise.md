@@ -1,8 +1,8 @@
 # Example: Bandpass Noise
 
+In this example we geneate a bandpass noise signal.
 This common stimulus is used for determining hearing thresholds.
 
-In this example we geneate a bandpass noise signal.
 
 ### Realtime Example
 

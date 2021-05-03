@@ -463,45 +463,51 @@ end
             
                 # Test different ways of instanciating the modifier
                 am = AmplitudeModulation(10u"Hz")
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", 0)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 0)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 0.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 1.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(rate=3)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(phase=3)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(depth=0.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
 
             end
         end
     end
 
+    @testset "ITD" begin
+
+        # Test instansiation
+        itd = TimeDelay()
+        itd = TimeDelay(2)
+        itd = TimeDelay(1, 22)
+        itd = TimeDelay(1, 22, false)
+        itd = TimeDelay(1, 22, false, ones(22, 1))
+        itd = TimeDelay(delay=33, buffer=zeros(33, 1))
+        itd = TimeDelay(channel=33)
+        itd = TimeDelay(enable=false, channel=3)
+
+        # Test correct behaiour
+        for desired_itd = -100:10:100
+
+            source = CorrelatedNoiseSource(Float64, 48000, 2, 0.3, 1)
+            if desired_itd >= 0
+                itd = TimeDelay(2, desired_itd)
+            else
+                itd = TimeDelay(1, -desired_itd)
+            end
+            sink = DummySampleSink(Float64, 48000, 2)
+            
+            for idx = 1:10
+                @pipe read(source, 0.1u"s") |> modify(itd, _) |>  write(sink, _)
+            end
+
+            lags = round.(Int, -150:1:150)
+            c = crosscor(sink.buf[:, 1], sink.buf[:, 2], lags)
+            x, idx = findmax(c)
+            @test lags[idx] == desired_itd
+        end
+    end
 end
 
