@@ -503,5 +503,35 @@ end
         end
     end
 
+    @testset "ITD" begin
+
+        # Test instansiation
+        itd = TimeDelay()
+        itd = TimeDelay(2)
+        itd = TimeDelay(1, 22)
+        itd = TimeDelay(1, 22, false)
+        itd = TimeDelay(1, 22, false, ones(22, 1))
+
+        # Test correct behaiour
+        for desired_itd = -100:10:100
+
+            source = CorrelatedNoiseSource(Float64, 48000, 2, 0.3, 1)
+            if desired_itd >= 0
+                itd = TimeDelay(2, desired_itd)
+            else
+                itd = TimeDelay(1, -desired_itd)
+            end
+            sink = DummySampleSink(Float64, 48000, 2)
+            
+            for idx = 1:10
+                @pipe read(source, 0.1u"s") |> modify(itd, _) |>  write(sink, _)
+            end
+
+            lags = round.(Int, -150:1:150)
+            c = crosscor(sink.buf[:, 1], sink.buf[:, 2], lags)
+            x, idx = findmax(c)
+            @test lags[idx] == desired_itd
+        end
+    end
 end
 
