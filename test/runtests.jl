@@ -463,41 +463,14 @@ end
             
                 # Test different ways of instanciating the modifier
                 am = AmplitudeModulation(10u"Hz")
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", 0)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 0)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 0.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(10u"Hz", π, 1.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(rate=3)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(phase=3)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
                 am = AmplitudeModulation(depth=0.5)
-                for idx = 1:10
-                    @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
-                end
 
             end
         end
@@ -511,6 +484,9 @@ end
         itd = TimeDelay(1, 22)
         itd = TimeDelay(1, 22, false)
         itd = TimeDelay(1, 22, false, ones(22, 1))
+        itd = TimeDelay(delay=33, buffer=zeros(33, 1))
+        itd = TimeDelay(channel=33)
+        itd = TimeDelay(enable=false, channel=3)
 
         # Test correct behaiour
         for desired_itd = -100:10:100
