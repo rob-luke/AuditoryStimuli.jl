@@ -23,7 +23,7 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
-source = CorrelatedNoiseSource(Float64, 48000, 2, 0.2, 1)
+source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.2, 1)
 sink = DummySampleSink(Float64, 48u"kHz", 2)
 am = AmplitudeModulation(20u"Hz")
 

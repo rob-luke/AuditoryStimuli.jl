@@ -16,8 +16,8 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
-source = NoiseSource(Float64, 48u"kHz", 2, 0.2)
-sink = DummySampleSink(Float64, 48u"kHz", 2)
+source = NoiseSource(Float64, 48u"kHz", 1, 0.2)
+sink = DummySampleSink(Float64, 48u"kHz", 1)
 am = AmplitudeModulation(40u"Hz")
 
 # Run real time audio processing
@@ -26,7 +26,7 @@ for frame = 1:100
 end
 
 # Validate the audio pipeline output
-plot(sink, label=["Left" "Right"])
+plot(sink, label="")
 current() |> DisplayAs.PNG # hide
 ```
 
@@ -41,7 +41,7 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
-source = NoiseSource(Float64, 48u"kHz", 2, 0.2)
+source = NoiseSource(Float64, 48u"kHz", 1, 0.2)
 am = AmplitudeModulation(40)
 
 # Run real time audio processing

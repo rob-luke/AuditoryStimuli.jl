@@ -3,22 +3,43 @@
 
 HarmonicComplex is a single-channel sine-tone signal generator. `freqs` can be an
 array of frequencies for a multi-frequency source, or a single frequency for a
-mono source.
+single sinusoid source.
+
+
+Inputs
+------
+* `samplerate` specifies the sample rate of the signal.  
+* `freqs` sinusoid frequencies to generate.  
+
+
+Output
+------
+* SampleSource object
+
+
+Example
+-------
+```julia
+source_object = HarmonicComplex(Float64, 48u"kHz", 200:200:2400)
+cn = read(source_object, 50u"ms")     # Generate 50 ms of harmonic stack audio
+```
 """
 mutable struct HarmonicComplex{T} <: SampleSource
     samplerate::Float64
     freqs::Vector{Float64} # in radians/sample
     phases::Vector{Float64}
+
+    function HarmonicComplex(eltype, samplerate::Number, freqs::Array)
+        # convert frequencies from cycles/sec to rad/sample
+        radfreqs = map(f->2pi*f/samplerate, freqs)
+        new{eltype}(Float64(samplerate), radfreqs, zeros(length(freqs)))
+    end
+    HarmonicComplex(eltype, samplerate, freq::StepRange) = HarmonicComplex(eltype, samplerate, collect(freq))
+    HarmonicComplex(eltype, samplerate::Number, freq::Real) = HarmonicComplex(eltype, samplerate, [freq])
+    HarmonicComplex(eltype, samplerate::Unitful.Frequency, freq::Real) = HarmonicComplex(eltype, samplerate |> u"Hz" |> ustrip, [freq])
+    HarmonicComplex(eltype, samplerate::Unitful.Frequency, freq::Array) = HarmonicComplex(eltype, samplerate |> u"Hz" |> ustrip, freq)
 end
 
-function HarmonicComplex(eltype, samplerate, freqs::Array)
-    # convert frequencies from cycles/sec to rad/sample
-    radfreqs = map(f->2pi*f/samplerate, freqs)
-    HarmonicComplex{eltype}(Float64(samplerate), radfreqs, zeros(length(freqs)))
-end
-
-# also allow a single frequency
-HarmonicComplex(eltype, samplerate, freq::Real) = HarmonicComplex(eltype, samplerate, [freq])
 
 Base.eltype(::HarmonicComplex{T}) where T = T
 nchannels(source::HarmonicComplex) = 1
