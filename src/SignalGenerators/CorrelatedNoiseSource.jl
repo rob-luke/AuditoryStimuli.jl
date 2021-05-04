@@ -47,10 +47,7 @@ mutable struct CorrelatedNoiseSource{T} <: SampleSource
         new{eltype}(Float64(samplerate), Int64(nchannels), Array{Float64}(cholcov))
     end
 
-    function CorrelatedNoiseSource(eltype, samplerate::Unitful.Frequency, nchannels::Number, std::Number, corr::Number)
-        samplerate = ustrip(uconvert(u"Hz", samplerate))
-        CorrelatedNoiseSource(eltype, samplerate, nchannels, std, corr)
-    end
+    CorrelatedNoiseSource(eltype, samplerate::Unitful.Frequency, nchannels::Number, std::Number, corr::Number) = CorrelatedNoiseSource(eltype, samplerate |> u"Hz" |> ustrip, nchannels, std, corr)
 end
 
 
