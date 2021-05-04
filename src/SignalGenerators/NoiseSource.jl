@@ -7,8 +7,8 @@ NoiseSource is a multi-channel noise signal generator. The noise on each channel
 Inputs
 ------
 * `samplerate` specifies the sample rate of the signal specified in Hz.
-* `nchannels` specifies the number of channels of the signal.  
-* `std` specifies the desired standard deviation of the signal.  
+* `nchannels` specifies the number of channels of the signal.
+* `std` specifies the desired standard deviation of the signal.
 
 
 Output
@@ -28,15 +28,14 @@ mutable struct NoiseSource{T} <: SampleSource
     samplerate::Float64
     nchannels::Int64
     std::Float64
-end
 
-function NoiseSource(eltype, samplerate::Number, nchannels::Int, std::Number=1)
-    NoiseSource{eltype}(Float64(samplerate), Int64(nchannels), Float64(std))
-end
-function NoiseSource(eltype, samplerate::Union{typeof(1u"Hz"), typeof(1u"kHz")},
-                     nchannels::Int, std::Number=1)
-    samplerate = ustrip(uconvert(u"Hz", samplerate))
-    NoiseSource(eltype, samplerate, nchannels, std)
+    function NoiseSource(eltype, samplerate::Number, nchannels::Int, std::Number=1)
+        new{eltype}(samplerate, nchannels, std)
+    end
+    function NoiseSource(eltype, samplerate::Unitful.Frequency, nchannels::Int, std::Number=1)
+        samplerate = ustrip(uconvert(u"Hz", samplerate))
+        NoiseSource(eltype, samplerate, nchannels, std)
+    end
 end
 
 Base.eltype(::NoiseSource{T}) where T = T
