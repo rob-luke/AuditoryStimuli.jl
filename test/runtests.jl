@@ -22,28 +22,6 @@ Fs = 48000
         @testset "SampledSignals" begin
 
 
-            @testset "CorrelatedNoiseSource generator" begin
-
-                source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.1)
-                a = read(source, 48000)
-                @test size(a) == (48000, 2)
-                @test std(a) ≈ 1 atol = 0.01
-
-                for correlation = 0:0.1:1
-                    source = CorrelatedNoiseSource(Float64, Fs, 2, 0.3, correlation)
-                    cn = read(source, Fs * 30)
-                    @test cor(cn)[1, 2] ≈ correlation atol=0.01
-                end
-
-                for deviation = 0.1:0.1:1.3
-                    for correlation = 0.0:0.1:0.9
-                        source = CorrelatedNoiseSource(Float64, 48000, 2, deviation, correlation)
-                        a = read(source, 48000)
-                        @test std(a) ≈ deviation atol = 0.025
-                        @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
-                    end
-                end
-            end
 
             @testset "Harmonic Complex" begin
 
@@ -337,6 +315,41 @@ end
                 @test std(a) ≈ deviation atol = 0.01
             end
         end
+
+
+        @testset "CorrelatedNoiseSource generator" begin
+
+            # Test instansiation
+            source = CorrelatedNoiseSource(Float64, 48.0u"kHz", 2, 1, 0.1)
+            @test source.samplerate == 48000
+            @test source.samplerate == samplerate(source)
+
+            source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 1, 1)
+            @test source.samplerate == 48000
+
+            source = CorrelatedNoiseSource(Float64, 46u"Hz", 2, 1, 1)
+            @test source.samplerate == 46
+
+            source = CorrelatedNoiseSource(Float64, 44100.0u"Hz", 2, 1, 1)
+            @test source.samplerate == 44100
+
+            # Test read
+            source = CorrelatedNoiseSource(Float64, 48000, 2, 1, 0.1)
+            a = read(source, 48000)
+            @test size(a) == (48000, 2)
+            @test std(a) ≈ 1 atol = 0.01
+
+            # Test behaviour
+            for deviation = 0.1:0.2:1.3
+                for correlation = 0.0:0.2:1
+                    source = CorrelatedNoiseSource(Float64, 48000, 2, deviation, correlation)
+                    a = read(source, 3u"s")
+                    @test std(a) ≈ deviation atol = 0.025
+                    @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
+                end
+            end
+        end
+
 
     end
 
