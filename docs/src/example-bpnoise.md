@@ -14,16 +14,15 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
-source = NoiseSource(Float64, 48u"kHz", 2, 0.2)
-sink = DummySampleSink(Float64, 48u"kHz", 2)
+source = NoiseSource(Float64, 48u"kHz", 1)
+sink = DummySampleSink(Float64, 48u"kHz", 1)
 
 # Design the filter
 responsetype = Bandpass(300, 700; fs=48000)
 designmethod = Butterworth(14)
 zpg = digitalfilter(responsetype, designmethod)
 f_left = DSP.Filters.DF2TFilter(zpg)
-f_right = DSP.Filters.DF2TFilter(zpg)
-bp = AuditoryStimuli.Filter([f_left, f_right])
+bp = AuditoryStimuli.Filter([f_left])
 
 # Run real time audio processing
 for frame = 1:100
