@@ -1,7 +1,7 @@
 """
-    HarmonicComplex(eltype, samplerate, freqs)
+    SinusoidSource(eltype, samplerate, freqs)
 
-HarmonicComplex is a single-channel sine-tone signal generator. `freqs` can be an
+SinusoidSource is a single-channel sine-tone signal generator. `freqs` can be an
 array of frequencies for a multi-frequency source, or a single frequency for a
 single sinusoid source.
 
@@ -20,32 +20,32 @@ Output
 Example
 -------
 ```julia
-source_object = HarmonicComplex(Float64, 48u"kHz", 200:200:2400)
+source_object = SinusoidSource(Float64, 48u"kHz", 200:200:2400)
 cn = read(source_object, 50u"ms")     # Generate 50 ms of harmonic stack audio
 ```
 """
-mutable struct HarmonicComplex{T} <: SampleSource
+mutable struct SinusoidSource{T} <: SampleSource
     samplerate::Float64
     freqs::Vector{Float64} # in radians/sample
     phases::Vector{Float64}
 
-    function HarmonicComplex(eltype, samplerate::Number, freqs::Array)
+    function SinusoidSource(eltype, samplerate::Number, freqs::Array)
         # convert frequencies from cycles/sec to rad/sample
         radfreqs = map(f->2pi*f/samplerate, freqs)
         new{eltype}(Float64(samplerate), radfreqs, zeros(length(freqs)))
     end
-    HarmonicComplex(eltype, samplerate, freq::StepRange) = HarmonicComplex(eltype, samplerate, collect(freq))
-    HarmonicComplex(eltype, samplerate::Number, freq::Real) = HarmonicComplex(eltype, samplerate, [freq])
-    HarmonicComplex(eltype, samplerate::Unitful.Frequency, freq::Real) = HarmonicComplex(eltype, samplerate |> u"Hz" |> ustrip, [freq])
-    HarmonicComplex(eltype, samplerate::Unitful.Frequency, freq::Array) = HarmonicComplex(eltype, samplerate |> u"Hz" |> ustrip, freq)
+    SinusoidSource(eltype, samplerate, freq::StepRange) = SinusoidSource(eltype, samplerate, collect(freq))
+    SinusoidSource(eltype, samplerate::Number, freq::Real) = SinusoidSource(eltype, samplerate, [freq])
+    SinusoidSource(eltype, samplerate::Unitful.Frequency, freq::Real) = SinusoidSource(eltype, samplerate |> u"Hz" |> ustrip, [freq])
+    SinusoidSource(eltype, samplerate::Unitful.Frequency, freq::Array) = SinusoidSource(eltype, samplerate |> u"Hz" |> ustrip, freq)
 end
 
 
-Base.eltype(::HarmonicComplex{T}) where T = T
-nchannels(source::HarmonicComplex) = 1
-samplerate(source::HarmonicComplex) = source.samplerate
+Base.eltype(::SinusoidSource{T}) where T = T
+nchannels(source::SinusoidSource) = 1
+samplerate(source::SinusoidSource) = source.samplerate
 
-function unsafe_read!(source::HarmonicComplex, buf::Array, frameoffset, framecount)
+function unsafe_read!(source::SinusoidSource, buf::Array, frameoffset, framecount)
     inc = 2pi / samplerate(source)
 
     for i in 1:framecount

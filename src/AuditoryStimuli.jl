@@ -27,7 +27,7 @@ export  bandpass_noise,
         PlotSpectroTemporal,
         NoiseSource,
         CorrelatedNoiseSource,
-        HarmonicComplex,
+        SinusoidSource,
         DummySampleSink,
         Amplification,
         AmplitudeModulation,
@@ -46,7 +46,7 @@ include("Plotting.jl")
 
 include("SignalGenerators/NoiseSource.jl")
 include("SignalGenerators/CorrelatedNoiseSource.jl")
-include("SignalGenerators/HarmonicComplex.jl")
+include("SignalGenerators/SinusoidSource.jl")
 include("SignalGenerators/DummySampleSink.jl")
 
 # #########################################
