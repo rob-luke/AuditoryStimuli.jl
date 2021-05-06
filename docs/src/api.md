@@ -16,7 +16,7 @@ AuditoryStimuli
 ```@docs
 NoiseSource
 CorrelatedNoiseSource
-HarmonicComplex
+SinusoidSource
 ```
 
 ## Online signal modifiers

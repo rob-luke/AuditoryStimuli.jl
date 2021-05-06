@@ -47,5 +47,6 @@ using StatsBase
 lags = round.(Int, -60:1:60)
 plot(lags, crosscor(sink.buf[:, 1], sink.buf[:, 2], lags),
      label="", ylab="Cross Correlation", xlab="Lag (samples)")
+current() |> DisplayAs.PNG # hide
 ```
 

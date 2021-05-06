@@ -336,19 +336,19 @@ end
         @testset "Harmonic Complex" begin
 
             # Test instansiation
-            source = HarmonicComplex(Float64, 48000u"Hz", 2)
+            source = SinusoidSource(Float64, 48000u"Hz", 2)
             @test source.samplerate == 48000
-            source = HarmonicComplex(Float64, 48000.7u"Hz", [100, 324, 55, 999])
+            source = SinusoidSource(Float64, 48000.7u"Hz", [100, 324, 55, 999])
             @test source.samplerate == 48000.7
-            source = HarmonicComplex(Float64, 48000, 300:300:3000)
+            source = SinusoidSource(Float64, 48000, 300:300:3000)
 
-            source = HarmonicComplex(Float64, 48000, 2000)
+            source = SinusoidSource(Float64, 48000, 2000)
             a = read(source, 48000)
             @test size(a) == (48000, 1)
 
 
             freqs = collect(200:200:2400.0)
-            source = HarmonicComplex(Float64, 48000, freqs)
+            source = SinusoidSource(Float64, 48000, freqs)
             a = read(source, 48000)
             b = welch_pgram(vec(a.data), fs=a.samplerate)
             maxs_cart = findlocalmaxima(power(b))
