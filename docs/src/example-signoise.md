@@ -42,7 +42,7 @@ for frame = 1:100
 end
 
 # Validate the audio pipeline output
-PlotSpectroTemporal(sink, figure_size=(750, 400), frequency_limits = [0, 4000])
+PlotSpectroTemporal(sink, frequency_limits = [0, 4000])
 current() |> DisplayAs.PNG # hide
 ```
 
