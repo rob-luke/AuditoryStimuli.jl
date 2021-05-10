@@ -7,7 +7,6 @@ using Logging
 using Plots
 using Unitful
 using SampledSignals
-using Images
 using Pipe
 
 Fs = 48000
