@@ -15,6 +15,7 @@ makedocs(
             "Bandpass Noise" => "example-bpnoise.md",
             "Interaural Time Delay" => "example-itd.md",
             "ITD Modulation" => "example-itmfr.md",
+            "Signal and Noise" => "example-signoise.md",
         ],
         "Advanced Usage" => "advanced.md",
         "API" => "api.md"
