@@ -7,8 +7,8 @@ using Logging
 using Plots
 using Unitful
 using SampledSignals
-using Images
 using Pipe
+using Images
 
 Fs = 48000
 
@@ -351,7 +351,7 @@ end
             source = SinusoidSource(Float64, 48000, freqs)
             a = read(source, 48000)
             b = welch_pgram(vec(a.data), fs=a.samplerate)
-            maxs_cart = findlocalmaxima(power(b))
+            maxs_cart = Images.findlocalmaxima(power(b))
             maxs = [idx[1] for idx in maxs_cart]
             maxs = maxs[power(b)[maxs] .> 0.02]
             @test freq(b)[maxs] == freqs
