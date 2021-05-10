@@ -9,7 +9,7 @@ This function plots the time, spectrogram, and periodogram of a signal
 
 """
 function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number; 
-                                figure_size::Tuple=(950, 450), 
+                                figure_size::Tuple=(750, 400), 
                                 window = hamming,
                                 amplitude_limits = nothing,
                                 power_limits = nothing,
@@ -65,7 +65,7 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
 end
 
 function PlotSpectroTemporal(x::SampledSignals.SampleBuf; 
-                             figure_size::Tuple=(950, 450), 
+                             figure_size::Tuple=(750, 400), 
                              window = hamming,
                              amplitude_limits = nothing,
                              power_limits = nothing,
