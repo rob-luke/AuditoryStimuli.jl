@@ -32,9 +32,9 @@ for frame = 1:100
     # Generate the signal of interest
     output = @pipe read(source, 0.01u"s") |> modify(bp, _)  |> modify(am, _) 
 
-    # During 0.3-0.7s apply a white noise
+    # During 0.3-0.7s add a white noise to the output
     if 30 < frame < 70
-	output += @pipe read(noisesource, 0.01u"s") 
+	output += read(noisesource, 0.01u"s") 
     end
 
     # Write the output to device
