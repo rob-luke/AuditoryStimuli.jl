@@ -33,6 +33,9 @@ performing numerical orbit integration).
 
 Why is this needed
 
+A number of software packages exist for controling the presentation of psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021].
+Simillarly, many packages exist for the analysis of acoustic signals [@python-sofa; @mcfee2015librosa]
+
 
 # Mathematics
 
