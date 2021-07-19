@@ -3,7 +3,7 @@
 ![Tests](https://github.com/rob-luke/AuditoryStimuli.jl/workflows/Tests/badge.svg)
 [![codecov.io](http://codecov.io/github/rob-luke/AuditoryStimuli.jl/coverage.svg?branch=master)](http://codecov.io/github/rob-luke/AuditoryStimuli.jl?branch=master)
 
-Generate auditory stimuli for real-time applications.  Specifically stimuli that are used in auditory research.
+Generate auditory stimuli for real-time applications.  Specifically, stimuli that are used in auditory research.
 
 
 ## Stimuli
