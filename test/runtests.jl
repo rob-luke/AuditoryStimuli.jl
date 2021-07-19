@@ -19,12 +19,6 @@ Fs = 48000
     @testset "Generator Functions" begin
     # ==================================
 
-        @testset "SampledSignals" begin
-
-
-
-
-        end
 
         @testset "One hit signal generation" begin
 
@@ -382,6 +376,14 @@ end
             @test source.samplerate == 96000
             source = NoiseSource(Float64, 96u"kHz", 2)
             @test source.samplerate == 96000
+            sink = DummySampleSink(Float64, 48000u"Hz", 3)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48000.0u"Hz", 3)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48u"kHz", 4)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48.0u"kHz", 4)
+            @test sink.samplerate == 48000
         end
 
         @testset "Amplification" begin
@@ -515,10 +517,13 @@ end
                 
                     # Test different ways of instanciating the modifier
                     am = AmplitudeModulation(10u"Hz")
+                    am = AmplitudeModulation(1.0u"Hz")
                     am = AmplitudeModulation(10u"Hz", 0)
+                    am = AmplitudeModulation(10.3u"Hz", 0)
                     am = AmplitudeModulation(10u"Hz", π)
                     am = AmplitudeModulation(10u"Hz", π, 0)
                     am = AmplitudeModulation(10u"Hz", π, 0.5)
+                    am = AmplitudeModulation(10.8u"Hz", π, 0.5)
                     am = AmplitudeModulation(10u"Hz", π, 1.5)
                     am = AmplitudeModulation(rate=3)
                     am = AmplitudeModulation(phase=3)
