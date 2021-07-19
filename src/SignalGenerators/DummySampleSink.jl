@@ -7,7 +7,8 @@ end
 
 DummySampleSink(eltype, samplerate::Number, channels::Int) =
     DummySampleSink{eltype}(samplerate, Array{eltype}(undef, 0, channels))
-function DummySampleSink(eltype, samplerate::Union{typeof(1u"Hz"), typeof(1u"kHz")}, 
+function DummySampleSink(eltype, samplerate::Union{typeof(1u"Hz"), typeof(1u"kHz"),
+                                                   typeof(1.0u"Hz"), typeof(1.0u"kHz")}, 
                          nchannels::Int)
     samplerate = ustrip(uconvert(u"Hz", samplerate))
     DummySampleSink(eltype, samplerate, nchannels)

@@ -376,6 +376,14 @@ end
             @test source.samplerate == 96000
             source = NoiseSource(Float64, 96u"kHz", 2)
             @test source.samplerate == 96000
+            sink = DummySampleSink(Float64, 48000u"Hz", 3)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48000.0u"Hz", 3)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48u"kHz", 4)
+            @test sink.samplerate == 48000
+            sink = DummySampleSink(Float64, 48.0u"kHz", 4)
+            @test sink.samplerate == 48000
         end
 
         @testset "Amplification" begin
