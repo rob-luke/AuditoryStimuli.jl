@@ -19,12 +19,6 @@ Fs = 48000
     @testset "Generator Functions" begin
     # ==================================
 
-        @testset "SampledSignals" begin
-
-
-
-
-        end
 
         @testset "One hit signal generation" begin
 
@@ -515,10 +509,13 @@ end
                 
                     # Test different ways of instanciating the modifier
                     am = AmplitudeModulation(10u"Hz")
+                    am = AmplitudeModulation(1.0u"Hz")
                     am = AmplitudeModulation(10u"Hz", 0)
+                    am = AmplitudeModulation(10.3u"Hz", 0)
                     am = AmplitudeModulation(10u"Hz", π)
                     am = AmplitudeModulation(10u"Hz", π, 0)
                     am = AmplitudeModulation(10u"Hz", π, 0.5)
+                    am = AmplitudeModulation(10.8u"Hz", π, 0.5)
                     am = AmplitudeModulation(10u"Hz", π, 1.5)
                     am = AmplitudeModulation(rate=3)
                     am = AmplitudeModulation(phase=3)
