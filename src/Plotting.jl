@@ -64,20 +64,6 @@ function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number;
 
 end
 
-function PlotSpectroTemporal(x::SampledSignals.SampleBuf; 
-                             figure_size::Tuple=(750, 400), 
-                             window = hamming,
-                             amplitude_limits = nothing,
-                             power_limits = nothing,
-                             time_limits = nothing,
-                             frequency_limits = [0, 1500],
-                             correlation_annotate = true)
-
-    PlotSpectroTemporal(x.data, x.samplerate, figure_size = figure_size, window = window, amplitude_limits = amplitude_limits, 
-                        time_limits = time_limits, frequency_limits = frequency_limits, correlation_annotate = correlation_annotate)
-
-end
-
 
 function vector_pow2db(a::Vector)
     for index = 1:size(a, 1)
