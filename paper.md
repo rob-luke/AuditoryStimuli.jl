@@ -18,7 +18,14 @@ bibliography: paper.bib
 
 # Summary
 
-The `AuditoryStimuli.jl` software package provides researchers with a framework to 
+The `AuditoryStimuli.jl` software package provides researchers with a framework to generate real-time audio signals.
+The package is designed for use in auditory research programs, neurofeedback applications, and audio signal processing development.
+The package is developed on top of [@sampled-signals] to provide auditory specific functionality and encourage best practices in real-time audio presentation.
+Generator functions are provided to create common auditory signals, and are designed to produce offline or real-time audio presentation.
+Modifier functions are provided for tasks such as signal modulation and amplitude scaling,
+these are designed to encourage best practices and include safe guards for common mistakes which can cause signal distortions which are perceived as clicks.
+
+
 
 # Statement of need
 
