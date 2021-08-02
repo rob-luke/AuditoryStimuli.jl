@@ -2,3 +2,10 @@ interaural
 auditorystimuli
 jl
 ssshhh
+AuditoryStimuli
+github
+https
+io
+luke
+SampledSignals
+Unitful
