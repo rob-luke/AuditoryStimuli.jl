@@ -13,3 +13,4 @@ jobs:
       with:
         source_files: README.md CHANGELOG.md notes/Notes.md
         task_name: Markdown
+        config_path: .github/workflows/.spellcheck.yml
