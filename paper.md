@@ -44,12 +44,19 @@ Instead this package provides tools to generate real-time audio signals that can
 I.e., the stimulus properties may change continously and dynamically on a scale of milliseconds,
 rather than in pre-generated signals on the scale of seconds.
 
-A real-time audio frameworks are required for developing audio signal processing algorithms.
-For example, noise reduction, wind noise detection [@sapozhnykov2019wind], or acoustic state detection [@robert2019blocked; @sapozhnykov2020headset]
+Real-time audio frameworks are required for developing audio signal processing algorithms.
+For example, noise reduction, wind noise detection [@sapozhnykov2019wind], acoustic state detection [@robert2019blocked; @sapozhnykov2020headset],
+and speech enhancement algorithms typically run using frame based processing, with frames of 2-4 ms.
+`AuditoryStimuli.jl` provides the user with the ability to dynamically set the parameters of each step in the processing chain in each frame,
+enabling real-time signal processing development.
 
-
-
-Explain the need for fast computation. Julia [@bezanson2017julia]
+Due to the real-time nature of the software package, a fast programming language is required.
+Audio signal processing is usually deployed using assembly or C programming languages, as these provide excellent processing speed.
+However, these low level languages require complex tooling and management of complex data states.
+Instead `AuditoryStimuli.jl` is written in the Julia programming language [@bezanson2017julia],
+which provides the convenience of a high level language while providing excellent computational speed.
+The package is developed on top of the the SampledSignals library [@sampled-signals], which provides the sample- and frame-based infrastructure.
+`AuditoryStimuli.jl` builds on top of this framework to provide auditory specific features.
 
 
 
