@@ -45,6 +45,7 @@ PNG
 PortAudio
 PortAudioStream
 println
+ramped
 realtime
 responsetype
 RMS
