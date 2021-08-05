@@ -66,13 +66,17 @@ The package is developed on top of the the SampledSignals library [@sampled-sign
 `AuditoryStimuli.jl` builds on top of this framework to provide auditory specific features.
 
 `AuditoryStimuli.jl` provides functions to generate real-time audio signals and avoid abrupt changes in the stimulus that cause unwanted perceptual distortions.
+When modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
+Then during processing, the modifier functions will ensure that parameters can not change too quickly, which causes distortions such as clicks.
+The package provides signal generators for common auditory stimuli such as noise, tones, multi tone complexes.
+Simillarly, the package provides for both single channel and multi channel audio processing, such as binaural stimuli with user specified interaural coherence.
+Modifier functions are provided for modifying the amplitude, phase, frequency content, and amplitude modulation of the signals.
+And tutorials are provided in the documentation which demonstrate how these generators and modifiers can be used together to produce common research stimuli.
 
 
+# Notes
 
-
-# Acknowledgements
-
-This software has already been used to generate stimuli for [@luke2021analysis], .
+This software has already been used to generate stimuli for [@luke2021analysis].
 
 
 # References
