@@ -20,16 +20,18 @@ bibliography: paper.bib
 
 The `AuditoryStimuli.jl` software package provides researchers with a framework to generate real-time audio signals.
 The package is designed for use in auditory research programs, neurofeedback applications, and audio signal processing development.
-The package is developed on top of [@sampled-signals] to provide auditory specific functionality and encourage best practices in real-time audio presentation.
-Generator functions are provided to create common auditory signals, and are designed to produce offline or real-time audio presentation.
-Modifier functions are provided for tasks such as signal modulation and amplitude scaling,
-these are designed to encourage best practices and include safe guards for common mistakes which can cause signal distortions which are perceived as clicks.
-
+The package is developed on top of [@sampled-signals] to provide auditory specific functionality and encourage best practices in real-time audio generation and presentation.
+As such, modules are provided to generate auditory signals, modify these signals, and output the resultant waveforms.
+The package can be used to generate offline audio signals,
+but when used as a real-time audio system it provides safe guards for common mistakes which can cause signal distortions.
 
 
 # Statement of need
 
-Why is this needed
+In the scientific fields of auditory perception, auditory neuroscience, and brain computer interface research
+there has been great improvement in standardising the analysis and post processing of research data.
+However, desipite being critical for producing reproducible experiments, standardised tools for the generation of auditory stimuli have not typically been developed with the same open-source rigour.
+A large portion of auditory research is conducted with shared code fragments without version control or bug reports.
 
 A number of software packages exist for controling the presentation of psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021].
 Simillarly, many packages exist for the analysis of acoustic signals [@python-sofa; @mcfee2015librosa]
