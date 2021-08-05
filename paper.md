@@ -30,20 +30,20 @@ but when used as a real-time audio system, it provides safe guards for common mi
 
 There has been great improvement in standardising the analysis and post processing of research data
 in the scientific fields of auditory perception, auditory neuroscience, and brain computer interface research [@gramfort2014mne; @oostenveld2011fieldtrip].
-However, desipite being critical for conducting reproducible experiments, standardised tools for the generation of auditory stimuli have typically not been developed with the same software engineering rigour.
+However, despite being critical for conducting reproducible experiments, standardised tools for the generation of auditory stimuli have typically not been developed with the same software engineering rigour.
 A large portion of stimulus signals for auditory research are generated with privately shared code fragments,
-without version control or efficent means of reporting errors.
+without version control or efficient means of reporting errors.
 As such, this package provides a documented and version-controlled open-source framework for generating auditory stimuli.
 
 `AuditoryStimuli.jl` is specifically developed for real-time audio research applications.
-A variety of software packages already exist for controling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021, ],
+A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021, ],
 and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa].
 As such, this package does not focus on providing the scaffolding for traditional experimentation
 such as block design experiments or alternative forced choice procedures;
 users are directed to existing tools such as [@pychoacoustics] for this purpose.
 Instead this package fills the need for a frame-based real-time signal processing framework.
 `AuditoryStimuli.jl`  provides tools to generate real-time audio signals that can be dynamically adapted to the users responses or state.
-I.e., the stimulus properties may change continously and dynamically on a scale of milliseconds, rather than in pre-generated signals on the scale of seconds.
+I.e., the stimulus properties may change continuously and dynamically on a scale of milliseconds, rather than in pre-generated signals on the scale of seconds.
 
 Real-time audio stimulus generation is also required for brain computer interface applications.
 For example, methods have been developed to measure the brains response to sounds in real time [@DECHEVEIGNE2018206; @luke2016kalman].
@@ -69,16 +69,16 @@ The package is developed on top of the the SampledSignals library [@sampled-sign
 When modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
 Then during processing, the modifier functions will ensure that parameters can not change too quickly, which causes distortions such as clicks.
 The package provides signal generators for common auditory stimuli such as noise, tones, and multi tone complexes.
-Simillarly, the package provides for both single channel and multi channel audio processing,
+Similarly, the package provides for both single channel and multi channel audio processing,
 e.g.,  such as binaural stimuli with user specified interaural coherence.
 Modifier functions are provided for modifying the amplitude, phase, frequency content, and amplitude modulation of the signals.
 And tutorials are provided in the documentation which demonstrate how these generators and modifiers can be used together to produce common research stimuli.
 
 Taken together, the `AuditoryStimuli.jl` package fills a need within the auditory research community for a open-source real-time audio framework.
 The package addresses the communities need for a frame-based audio framework,
-that is computationaly efficent and can be used in neuro feedback applications as well as audio processing development.
-An issue tracker and means for contriubtion are provided.
-And the package provides installation insturctions, documentation, and tutorials.
+that is computationally efficient and can be used in neuro feedback applications as well as audio processing development.
+An issue tracker and means for code contribution are provided.
+And the package provides installation instructions, documentation, and tutorials.
 
 # Notes
 
