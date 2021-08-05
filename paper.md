@@ -56,10 +56,10 @@ and speech enhancement algorithms typically run using frame based processing, wi
 enabling real-time signal processing development.
 Algorithm parameters can be varied and processing steps can be adaptively enabled.
 
-Due to the real-time nature of the software package, a fast programming language is required.
+Due to the real-time nature of the software package, fast mathematical computation is required.
 Audio signal processing is usually deployed using assembly or C programming languages, as these provide excellent processing speed.
 However, these low level languages require complex tooling and management of complex data structures,
-which increases development time and decreases the rate at which researchers can iterate on signal processing designs.
+which increases development time and decreases the rate at which researchers can iterate on signal-processing designs.
 Instead `AuditoryStimuli.jl` is written in the Julia programming language [@bezanson2017julia],
 which provides the convenience of a high level language while providing excellent computational speed.
 The package is developed on top of the the SampledSignals library [@sampled-signals], which provides the sample- and frame-based infrastructure.
@@ -68,11 +68,17 @@ The package is developed on top of the the SampledSignals library [@sampled-sign
 `AuditoryStimuli.jl` provides functions to generate real-time audio signals and avoid abrupt changes in the stimulus that cause unwanted perceptual distortions.
 When modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
 Then during processing, the modifier functions will ensure that parameters can not change too quickly, which causes distortions such as clicks.
-The package provides signal generators for common auditory stimuli such as noise, tones, multi tone complexes.
-Simillarly, the package provides for both single channel and multi channel audio processing, such as binaural stimuli with user specified interaural coherence.
+The package provides signal generators for common auditory stimuli such as noise, tones, and multi tone complexes.
+Simillarly, the package provides for both single channel and multi channel audio processing,
+e.g.,  such as binaural stimuli with user specified interaural coherence.
 Modifier functions are provided for modifying the amplitude, phase, frequency content, and amplitude modulation of the signals.
 And tutorials are provided in the documentation which demonstrate how these generators and modifiers can be used together to produce common research stimuli.
 
+Taken together, the `AuditoryStimuli.jl` package fills a need within the auditory research community for a open-source real-time audio framework.
+The package addresses the communities need for a frame-based audio framework,
+that is computationaly efficent and can be used in neuro feedback applications as well as audio processing development.
+An issue tracker and means for contriubtion are provided.
+And the package provides installation insturctions, documentation, and tutorials.
 
 # Notes
 
