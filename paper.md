@@ -34,15 +34,22 @@ However, desipite being critical for conducting reproducible experiments, standa
 A large portion of stimulus signals for auditory research is generated with shared code fragments without version control or efficent means of reporting errors.
 As such, this package provide a documented and version controlled open-source framework for generating auditory stimuli.
 
-A number of software packages exist for controling the presentation of psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
+`AuditoryStimuli.jl` is specifically developed for real-time audio applications and research.
+A number of software packages already exist for controling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
 and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa].
 As such, this package does not focus on providing the scaffolding for traditional experimentation
-such as block design experiments, alternative forced choice procedures, etc and users are directed to existing tools such as [@pychoacoustics].
+such as block design experiments, alternative forced choice procedures, etc;
+users are directed to existing tools such as [@pychoacoustics].
 Instead this package provides tools to generate real-time audio signals that can be dynamically adapted to the users responses or state.
-I.e., the stimulus properties may change on a scale of 10's of ms, not after user feedback after seconds of audio presentation.
+I.e., the stimulus properties may change continously and dynamically on a scale of milliseconds,
+rather than in pre-generated signals on the scale of seconds.
+
+A real-time audio frameworks are required for developing audio signal processing algorithms.
+For example, noise reduction, wind noise detection [@sapozhnykov2019wind], or acoustic state detection [@robert2019blocked; @sapozhnykov2020headset]
 
 
-Explain the need for fast computation. Julia
+
+Explain the need for fast computation. Julia [@bezanson2017julia]
 
 
 
