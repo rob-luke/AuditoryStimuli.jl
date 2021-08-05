@@ -4,7 +4,7 @@ In this tutorial the basics of real-time audio processing are introduced,
 and how you can generate real time audio with this package.
 
 It is common to process audio in small chunks of samples called frames.
-This is more efficent than procesing signals on a sample by sample basis,
+This is more efficient than processing signals on a sample by sample basis,
 yet allows dynamic adaptation of the audio signal.
 In this example we use a frame size of 1/100th of a second,
 or 480 samples when using a sample rate of 48 kHz.
@@ -75,12 +75,12 @@ nothing # hide
 ## Run the real-time audio pipeline
 
 To run the real-time processing we generate a pipeline and run it.
-We use the `pipe` notation to convenitently describe the audio pipeline.
+We use the `pipe` notation to conveniently describe the audio pipeline.
 In this simple example we read a frame with duration 1/100th of a second from the source.
 The frame of white noise is piped through the amplitude modifier,
 and then piped in to the sink.
 Modifiers always take the modification object as the first argument, followed by an underscore to represent the piped data.
-Simillarly, when writing the data to a sink, the sink is always the first argument, followed by an underscore to represent the piped data.
+Similarly, when writing the data to a sink, the sink is always the first argument, followed by an underscore to represent the piped data.
 The pipeline is run 100 times, resulting in 1 second of generated audio.
 
 ```@example realtime
@@ -92,7 +92,7 @@ end
 
 ## Verify processing was correctly applied
 
-We can plot the data from sink (as it was a DummySink, which is simply a buffer) to confirm the signal generated matchess our expectations.
+We can plot the data from sink (as it was a DummySink, which is simply a buffer) to confirm the signal generated matches our expectations.
 As expected, we see below that two channels of audio are generated, that the signal is 1 second long, and that there is a ramp applied to the onset.
 
 ```@example realtime
@@ -117,7 +117,7 @@ nothing # hide
 ```
 
 Once the filter is specified as a zero pole gain representation
-two filters are instansiated using this specification.
+two filters are instantiated using this specification.
 A filter must be generated for each channel of audio.
 These DSP.Filters are then passed in to the AuditoryStimuli filter object for further use.
 
@@ -129,7 +129,7 @@ bandpass = AuditoryStimuli.Filter([f_left, f_right])
 nothing # hide
 ```
 
-Once the filters are designed and placed in an AuditoryStimule.Filter object they can
+Once the filters are designed and placed in an AuditoryStimuli.Filter object they can
 be used just like any other modifier.
 Below the filter is included in the pipeline and applied to 1 second of audio in 1/100th second frames.
 This example demonstrates how an arbitrary number of modifiers can be chained to create complex audio stimuli.
