@@ -36,7 +36,7 @@ without version control or efficient means of reporting errors.
 As such, this package provides a documented and version-controlled open-source framework for generating auditory stimuli.
 
 `AuditoryStimuli.jl` is specifically developed for real-time audio research applications.
-A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021, ],
+A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
 and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa].
 As such, this package does not focus on providing the scaffolding for traditional experimentation
 such as block design experiments or alternative forced choice procedures;
@@ -79,6 +79,11 @@ The package addresses the communities need for a frame-based audio framework,
 that is computationally efficient and can be used in neuro feedback applications as well as audio processing development.
 An issue tracker and means for code contribution are provided.
 And the package provides installation instructions, documentation, and tutorials.
+
+# Audience
+
+`AuditoryStimuli.jl` is designed for students and researchs of all levels in the fields of auditory perception science, auditory neuroscience, neurofeedback research, and audio signal processing engineering.
+
 
 # Notes
 
