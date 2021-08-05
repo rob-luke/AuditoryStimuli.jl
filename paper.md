@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 # Summary
 
-The `AuditoryStimuli.jl` software package provides researchers with a framework to generate real-time audio signals.
+The `AuditoryStimuli.jl` software package provides researchers with a framework to generate real-time audio signals in the Julia programming language.
 The package is designed for use in auditory research programs, neurofeedback applications, and audio signal processing development.
 The package is developed on top of the SampledSignals library [@sampled-signals] to provide auditory specific functionality and encourage best practices in real-time audio generation and presentation.
 As such, modules are provided to generate auditory signals, modify these signals, and output the resultant waveforms.
