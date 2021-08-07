@@ -23,7 +23,7 @@ The package is designed for use in auditory research programs, neurofeedback app
 The package is developed on top of the SampledSignals library [@sampled-signals] to provide auditory specific functionality and encourage best practices in real-time audio generation.
 As such, modules are provided to generate auditory signals, modify these signals, and output the resulting waveforms.
 The package can be used to generate offline audio signals,
-but when used as a real-time audio system, it provides safe guards for common mistakes which can cause signal distortions.
+but when used as a real-time audio system, it provides safe guards for common mistakes which can cause signal distortions and undesired auditory percepts.
 
 
 # Statement of need
@@ -34,6 +34,7 @@ However, despite being critical for conducting reproducible experiments, standar
 A large portion of stimulus signals for auditory research are generated with privately shared code fragments,
 without version control or efficient means of reporting errors.
 As such, this package provides a documented and version-controlled open-source framework for generating auditory stimuli.
+And includes an issue tracker and means to submit code improvements.
 
 `AuditoryStimuli.jl` is specifically developed for real-time audio research applications.
 A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
@@ -49,7 +50,7 @@ Real-time audio stimulus generation is also required for brain computer interfac
 For example, methods have been developed to measure the brains response to sounds in real time [@DECHEVEIGNE2018206; @luke2016kalman].
 This package provides a real-time framework which can be used to adapt the resulting audio according to an external signal, such as the brain state.
 
-Real-time audio frameworks are required for developing audio signal processing algorithms.
+Real-time audio frameworks are required for developing audio signal-processing algorithms.
 For example, noise reduction, wind noise detection [@sapozhnykov2019wind], acoustic state detection [@robert2019blocked; @sapozhnykov2020headset],
 and speech enhancement algorithms typically run using frame based processing, with frames of 2-4 ms.
 `AuditoryStimuli.jl` provides the user with the ability to dynamically set processing parameters for each audio frame,
@@ -66,11 +67,11 @@ The package is developed on top of the the SampledSignals library [@sampled-sign
 `AuditoryStimuli.jl` builds on top of this framework to provide auditory specific features.
 
 `AuditoryStimuli.jl` provides functions to generate real-time audio signals and avoid abrupt changes in the stimulus that cause unwanted perceptual distortions.
-When modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
+For example, when modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
 Then during processing, the modifier functions will ensure that parameters can not change too quickly, which causes distortions such as clicks.
 The package provides signal generators for common auditory stimuli such as noise, tones, and multi tone complexes.
 Similarly, the package provides for both single channel and multi channel audio processing,
-e.g.,  such as binaural stimuli with user specified interaural coherence.
+e.g., binaural stimuli with user specified interaural coherence.
 Modifier functions are provided for modifying the amplitude, phase, frequency content, and amplitude modulation of the signals.
 And tutorials are provided in the documentation which demonstrate how these generators and modifiers can be used together to produce common research stimuli.
 
@@ -87,7 +88,7 @@ And the package provides installation instructions, documentation, and tutorials
 
 # Notes
 
-This software has already been used to generate stimuli for [@luke2021analysis].
+This software was used to generate stimuli for [@luke2021analysis].
 
 
 # References
