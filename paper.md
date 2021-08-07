@@ -65,6 +65,9 @@ Instead `AuditoryStimuli.jl` is written in the Julia programming language [@beza
 which provides the convenience of a high level language while providing excellent computational speed.
 The package is developed on top of the the SampledSignals library [@sampled-signals], which provides the sample- and frame-based infrastructure.
 `AuditoryStimuli.jl` builds on top of this framework to provide auditory specific features.
+`AuditoryStimuli.jl` also utilises the Unitful [@unitful] framework for automatic handling of units,
+all quantities must be passed with units (e.g., sample rate and modulation rate must be passed as Hz, kHz, etc) and will be automatically validated.
+This automatic conversion and checking of units further reduces the chance of user error when using `AuditoryStimuli.jl`.
 
 `AuditoryStimuli.jl` provides functions to generate real-time audio signals and avoid abrupt changes in the stimulus that cause unwanted perceptual distortions.
 For example, when modifier functions are instantiated, the user can specify the maximum rate of change of the parameters.
