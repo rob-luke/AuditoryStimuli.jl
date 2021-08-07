@@ -34,13 +34,8 @@ AmplitudeModulation(a, b, c) = AmplitudeModulation(a, b, c, true, 0)
 AmplitudeModulation(a, b) = AmplitudeModulation(a, b, 1, true, 0)
 AmplitudeModulation(a) = AmplitudeModulation(a, π, 1, true, 0)
 
-# TODO: Must be a nicer way to handle units than this
-AmplitudeModulation(a::typeof(1.0u"Hz"), b, c) = AmplitudeModulation(a |> u"Hz" |> ustrip, b, c)
-AmplitudeModulation(a::typeof(1u"Hz"), b, c) = AmplitudeModulation(a |> u"Hz" |> ustrip, b, c)
-AmplitudeModulation(a::typeof(1.0u"Hz"), b) = AmplitudeModulation(a |> u"Hz" |> ustrip, b)
-AmplitudeModulation(a::typeof(1u"Hz"), b) = AmplitudeModulation(a |> u"Hz" |> ustrip, b)
-AmplitudeModulation(a::typeof(1.0u"Hz")) = AmplitudeModulation(a |> u"Hz" |> ustrip)
-AmplitudeModulation(a::typeof(1u"Hz")) = AmplitudeModulation(a |> u"Hz" |> ustrip)
+# Handle type arguments
+AmplitudeModulation(a::AbstractQuantity, args...) = AmplitudeModulation(a |> u"Hz" |> ustrip, args...)
 
 # TODO: Must be a smarter way to provide keyword functionality
 function AmplitudeModulation(;rate::Number=1,

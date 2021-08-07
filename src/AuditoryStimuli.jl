@@ -13,6 +13,7 @@ using FFTW
 using Unitful
 using Plots
 
+using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity
 import SampledSignals: nchannels, samplerate, unsafe_read!
 import Plots: plot
 

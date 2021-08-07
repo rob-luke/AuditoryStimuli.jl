@@ -516,18 +516,19 @@ end
                     @test mid_mod > end_mod
                 
                     # Test different ways of instanciating the modifier
-                    am = AmplitudeModulation(10u"Hz")
-                    am = AmplitudeModulation(1.0u"Hz")
-                    am = AmplitudeModulation(10u"Hz", 0)
-                    am = AmplitudeModulation(10.3u"Hz", 0)
-                    am = AmplitudeModulation(10u"Hz", π)
-                    am = AmplitudeModulation(10u"Hz", π, 0)
-                    am = AmplitudeModulation(10u"Hz", π, 0.5)
-                    am = AmplitudeModulation(10.8u"Hz", π, 0.5)
-                    am = AmplitudeModulation(10u"Hz", π, 1.5)
-                    am = AmplitudeModulation(rate=3)
-                    am = AmplitudeModulation(phase=3)
-                    am = AmplitudeModulation(depth=0.5)
+                    @test AmplitudeModulation(10u"Hz").rate == 10
+                    @test AmplitudeModulation(1.0u"Hz").rate == 1
+                    @test AmplitudeModulation(10u"Hz", 0).rate == 10
+                    @test AmplitudeModulation(10.3u"Hz", 0).rate == 10.3
+                    @test AmplitudeModulation(10u"Hz", π).rate == 10
+                    @test AmplitudeModulation(10u"Hz", π, 0).rate == 10
+                    @test AmplitudeModulation(10u"Hz", π, 0.5).rate == 10
+                    @test AmplitudeModulation(10.8u"Hz", π, 0.5).rate == 10.8
+                    @test AmplitudeModulation(10u"Hz", π, 1.5).rate == 10
+                    @test AmplitudeModulation(10u"Hz", π, 1.5).depth == 1.5
+                    @test AmplitudeModulation(rate=3).rate == 3
+                    @test AmplitudeModulation(phase=3).phase == 3
+                    @test AmplitudeModulation(depth=0.5).depth == 0.5
 
                 end
             end
