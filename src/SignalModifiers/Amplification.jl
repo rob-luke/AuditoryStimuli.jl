@@ -1,13 +1,13 @@
 """
     Amplification(target, current, change_limit)
 
-Apply amplification to the signal
+Apply amplification to the signal.
 
-This modifier allows the user to specify a target amplification
+This modifier allows the user to specify a `target` amplification
 value, the modifier will then increase the amplification of the
 signal until the desired amplification is achieved. The rate
 at which the amplification can be changed is parameterised by
-the user too.
+the `change_limit` parameter.
 
 To slowly ramp a signal to a desired value set the `target` amplification
 to the desired value, and the `change_limit` to a small value.
@@ -29,15 +29,11 @@ Inputs
 * `change_limit` maximum change that can occur per frame.
 * `enable` enable the modifier, if false the signal will be passed through without modification.
 
-Output
-------
-* SampleBuf 
-
 Example
 -------
 ```julia
 amplify = Amplification(0.1, 0.0, 0.05)
-attenuated_sound = write(amplify, original_sound)
+attenuated_sound = modify(amplify, original_sound)
 ```
 """
 mutable struct Amplification
