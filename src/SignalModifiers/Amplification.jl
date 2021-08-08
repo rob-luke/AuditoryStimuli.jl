@@ -9,24 +9,25 @@ signal until the desired amplification is achieved. The rate
 at which the amplification can be changed is parameterised by
 the user too.
 
-To slowly ramp a signal to a desired value set the target amplification
-to the desired value, and the change rate to a small value.
+To slowly ramp a signal to a desired value set the `target` amplification
+to the desired value, and the `change_limit` to a small value.
 
-To instantly change the signal set the change rate to infinity and
-modify the target value.
+To instantly change the signal set the `change_limit` to infinity and
+modify the `target` value.
 
 When initialising the modifier specify the desired starting point
-using the current parameter.
+using the `current` parameter.
 
 You can access the exact amplification at any time by querying the
-``current`` parameter.
+`current` parameter.
 
 Inputs
 ------
 * `target` desired linear amplification factor to be applied to signal.
 * `current` linear amplification currently applied to signal.  
   Also used to specify the intial value for the process.
-* `amplification_step_change_limit` maximum change that can occur per frame.
+* `change_limit` maximum change that can occur per frame.
+* `enable` enable the modifier, if false the signal will be passed through without modification.
 
 Output
 ------
