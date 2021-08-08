@@ -21,40 +21,32 @@ am = AmplitudeModulation(1, 0.0, 0.05)
 attenuated_sound = write(am, original_sound)
 ```
 """
-mutable struct AmplitudeModulation
-    rate::Number 
-    phase::Number
-    depth::Number
-    enable::Bool
-    time::Float64
+@with_kw mutable struct AmplitudeModulation
+    rate::typeof(1.0u"Hz")=0.0u"Hz"
+    phase::Number=π
+    depth::Number=1
+    enable::Bool=true
+    time::Float64=0.0
+
+    AmplitudeModulation(a::AbstractQuantity, b, c, d, e) = new(a, b, c, d, e)
+    AmplitudeModulation(a::AbstractQuantity, b, c, d) = new(a, b, c, d, 0.0)
+    AmplitudeModulation(a::AbstractQuantity, b, c) = new(a, b, c, true, 0.0)
+    AmplitudeModulation(a::AbstractQuantity, b) = new(a, b, 1, true, 0.0)
+    AmplitudeModulation(a::AbstractQuantity) = new(a, π, 1, true, 0.0)
+
 end
 
-# TODO: Must be cleaner way to set defaults
-AmplitudeModulation(a, b, c) = AmplitudeModulation(a, b, c, true, 0)
-AmplitudeModulation(a, b) = AmplitudeModulation(a, b, 1, true, 0)
-AmplitudeModulation(a) = AmplitudeModulation(a, π, 1, true, 0)
-
-# TODO: Must be a nicer way to handle units than this
-AmplitudeModulation(a::typeof(1.0u"Hz"), b, c) = AmplitudeModulation(a |> u"Hz" |> ustrip, b, c)
-AmplitudeModulation(a::typeof(1u"Hz"), b, c) = AmplitudeModulation(a |> u"Hz" |> ustrip, b, c)
-AmplitudeModulation(a::typeof(1.0u"Hz"), b) = AmplitudeModulation(a |> u"Hz" |> ustrip, b)
-AmplitudeModulation(a::typeof(1u"Hz"), b) = AmplitudeModulation(a |> u"Hz" |> ustrip, b)
-AmplitudeModulation(a::typeof(1.0u"Hz")) = AmplitudeModulation(a |> u"Hz" |> ustrip)
-AmplitudeModulation(a::typeof(1u"Hz")) = AmplitudeModulation(a |> u"Hz" |> ustrip)
-
-# TODO: Must be a smarter way to provide keyword functionality
-function AmplitudeModulation(;rate::Number=1,
-                             phase::Number=π,
-                             depth::Number=1)
-    AmplitudeModulation(Float64(rate), Float64(phase), Float64(depth), true, 0)
+function AmplitudeModulation(a::Number, args...)
+    @error "You must use units for modulation rate."
 end
+
 
 function modify(sink::AmplitudeModulation, buf)
     start_time = sink.time
     end_time = start_time + (size(buf, 1) / samplerate(buf))
     if sink.enable
         t = range(start_time, stop=end_time, length=size(buf, 1))
-        M = 1 .* cos.(2 * π * sink.rate * t .+ sink.phase) .* sink.depth
+        M = 1 .* cos.(2 * π * ustrip(sink.rate) * t .+ sink.phase) .* sink.depth
         buf.data = (1 .+ M) .* buf.data
     end
     sink.time = end_time

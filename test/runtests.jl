@@ -500,7 +500,7 @@ end
 
                     source = NoiseSource(Float64, Fs, num_channels)
                     sink = DummySampleSink(Float64, 48000, num_channels)
-                    am = AmplitudeModulation(10)
+                    am = AmplitudeModulation(10u"Hz")
 
                     for idx = 1:10
                         @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
@@ -516,18 +516,33 @@ end
                     @test mid_mod > end_mod
                 
                     # Test different ways of instanciating the modifier
-                    am = AmplitudeModulation(10u"Hz")
-                    am = AmplitudeModulation(1.0u"Hz")
-                    am = AmplitudeModulation(10u"Hz", 0)
-                    am = AmplitudeModulation(10.3u"Hz", 0)
-                    am = AmplitudeModulation(10u"Hz", π)
-                    am = AmplitudeModulation(10u"Hz", π, 0)
-                    am = AmplitudeModulation(10u"Hz", π, 0.5)
-                    am = AmplitudeModulation(10.8u"Hz", π, 0.5)
-                    am = AmplitudeModulation(10u"Hz", π, 1.5)
-                    am = AmplitudeModulation(rate=3)
-                    am = AmplitudeModulation(phase=3)
-                    am = AmplitudeModulation(depth=0.5)
+                    @test AmplitudeModulation(1u"MHz").rate == 1000000u"Hz"
+                    @test AmplitudeModulation(1u"kHz").rate == 1000u"Hz"
+                    @test AmplitudeModulation(1u"mHz").rate == 0.001u"Hz"
+                    @test AmplitudeModulation(10u"Hz").rate == 10u"Hz"
+                    @test AmplitudeModulation(1.0u"Hz").rate == 1u"Hz"
+                    @test AmplitudeModulation(10u"Hz", 0.0).rate == 10u"Hz"
+                    @test AmplitudeModulation(10.3u"Hz", 0.0).rate == 10.3u"Hz"
+                    @test AmplitudeModulation(10u"Hz", π).rate == 10u"Hz"
+                    @test AmplitudeModulation(10u"Hz", π, 0.0).rate == 10u"Hz"
+                    @test AmplitudeModulation(10u"Hz", π, 0.5).rate == 10u"Hz"
+                    @test AmplitudeModulation(10.8u"Hz", π, 0.5).rate == 10.8u"Hz"
+                    @test AmplitudeModulation(1.0u"kHz", π, 1.5).rate == 1000u"Hz"
+                    @test AmplitudeModulation(1.0u"kHz", π, 1.5, false).enable == false
+                    @test AmplitudeModulation(10u"Hz", π, 1.5).depth == 1.5
+                    @test AmplitudeModulation(rate=3u"Hz").rate == 3.0u"Hz"
+                    @test AmplitudeModulation(phase=3).phase == 3
+                    @test AmplitudeModulation(depth=0.5).depth == 0.5
+
+                    # Test defaults
+                    @test AmplitudeModulation().rate == 0u"Hz"
+                    @test AmplitudeModulation().phase == π
+                    @test AmplitudeModulation().depth == 1
+                    @test AmplitudeModulation().enable == true
+                    @test AmplitudeModulation().time == 0
+
+                    # Test bad instansiation
+                    @test_logs (:error, "You must use units for modulation rate.")  AmplitudeModulation(33)
 
                 end
             end
