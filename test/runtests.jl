@@ -537,6 +537,9 @@ end
                     @test AmplitudeModulation().enable == true
                     @test AmplitudeModulation().time == 0
 
+                    # Test bad instansiation
+                    @test_logs (:error, "You must use units for modulation rate.")  AmplitudeModulation(33)
+
                 end
             end
         end

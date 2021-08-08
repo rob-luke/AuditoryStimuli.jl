@@ -28,12 +28,16 @@ attenuated_sound = write(am, original_sound)
     enable::Bool=true
     time::Float64=0.0
 
-    AmplitudeModulation(a, b, c, d, e) = new(a, b, c, d, e)
-    AmplitudeModulation(a, b, c, d) = new(a, b, c, d, 0.0)
-    AmplitudeModulation(a, b, c) = new(a, b, c, true, 0.0)
-    AmplitudeModulation(a, b) = new(a, b, 1, true, 0.0)
-    AmplitudeModulation(a) = new(a, π, 1, true, 0.0)
+    AmplitudeModulation(a::AbstractQuantity, b, c, d, e) = new(a, b, c, d, e)
+    AmplitudeModulation(a::AbstractQuantity, b, c, d) = new(a, b, c, d, 0.0)
+    AmplitudeModulation(a::AbstractQuantity, b, c) = new(a, b, c, true, 0.0)
+    AmplitudeModulation(a::AbstractQuantity, b) = new(a, b, 1, true, 0.0)
+    AmplitudeModulation(a::AbstractQuantity) = new(a, π, 1, true, 0.0)
 
+end
+
+function AmplitudeModulation(a::Number, args...)
+    @error "You must use units for modulation rate."
 end
 
 
