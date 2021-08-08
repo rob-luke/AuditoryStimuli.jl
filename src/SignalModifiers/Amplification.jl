@@ -19,7 +19,7 @@ When initialising the modifier specify the desired starting point
 using the current parameter.
 
 You can access the exact amplification at any time by querying the
-current parameter.
+``current`` parameter.
 
 Inputs
 ------
