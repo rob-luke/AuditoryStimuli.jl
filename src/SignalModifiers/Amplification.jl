@@ -3,6 +3,24 @@
 
 Apply amplification to the signal
 
+This modifier allows the user to specify a target amplification
+value, the modifier will then increase the amplification of the
+signal until the desired amplification is achieved. The rate
+at which the amplification can be changed is parameterised by
+the user too.
+
+To slowly ramp a signal to a desired value set the target amplification
+to the desired value, and the change rate to a small value.
+
+To instantly change the signal set the change rate to infinity and
+modify the target value.
+
+When initialising the modifier specify the desired starting point
+using the current parameter.
+
+You can access the exact amplification at any time by querying the
+current parameter.
+
 Inputs
 ------
 * `target` desired linear amplification factor to be applied to signal.
