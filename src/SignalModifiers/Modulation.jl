@@ -10,15 +10,11 @@ Inputs
   Defaults to pi so that modulation starts at a minimum.
 * `depth` modulation depth.
 
-Output
-------
-* SampleBuf 
-
 Example
 -------
 ```julia
-am = AmplitudeModulation(1, 0.0, 0.05)
-attenuated_sound = write(am, original_sound)
+modulate = AmplitudeModulation(1u"Hz")
+modulated_sound = modify(modulate, original_sound)
 ```
 """
 @with_kw mutable struct AmplitudeModulation

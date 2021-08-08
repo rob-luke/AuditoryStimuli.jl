@@ -6,14 +6,10 @@ Delay the signal in specified channel.
 Inputs
 ------
 * `channel` which channel should have a time delay applied.
-* `delay` delay to be applied in samples or unitful units.  
+* `delay` delay to be applied in samples.  
 * `enable` should the modifier be enabled.
-* `buffer` initial values with which to pad the time delay.
+* `buffer` initial values with which to pad the time delay. Defaults to zeros.
 
-
-Output
-------
-* SampleBuf 
 
 Example
 -------

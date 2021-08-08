@@ -8,9 +8,6 @@ Inputs
 ------
 * `filters` array of DSP filter objects.
 
-Output
-------
-* Filter object 
 
 Example
 -------
@@ -21,7 +18,9 @@ designmethod = Butterworth(4)
 zpg = digitalfilter(responsetype, designmethod)
 f_left = DSP.Filters.DF2TFilter(zpg)
 f_right = DSP.Filters.DF2TFilter(zpg)
+
 bandpass = AuditoryStimuli.Filter([f_left, f_right])
+filtered_sound = modify(bandpass, original_sound)
 ```
 """
 mutable struct Filter
