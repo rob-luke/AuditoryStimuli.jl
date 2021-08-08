@@ -42,7 +42,7 @@ using DisplayAs # hide
 
 # Specify the source, modifiers, and sink of our audio pipeline
 source = NoiseSource(Float64, 48u"kHz", 1, 0.2)
-am = AmplitudeModulation(40)
+am = AmplitudeModulation(40u"Hz")
 
 # Run real time audio processing
 audio = read(source, 1.0u"s")
