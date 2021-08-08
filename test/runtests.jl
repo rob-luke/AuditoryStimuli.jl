@@ -500,7 +500,7 @@ end
 
                     source = NoiseSource(Float64, Fs, num_channels)
                     sink = DummySampleSink(Float64, 48000, num_channels)
-                    am = AmplitudeModulation(10)
+                    am = AmplitudeModulation(10u"Hz")
 
                     for idx = 1:10
                         @pipe read(source, 0.01u"s") |> modify(am, _) |>  write(sink, _)
@@ -518,10 +518,10 @@ end
                     # Test different ways of instanciating the modifier
                     @test AmplitudeModulation(10u"Hz").rate == 10
                     @test AmplitudeModulation(1.0u"Hz").rate == 1
-                    @test AmplitudeModulation(10u"Hz", 0).rate == 10
-                    @test AmplitudeModulation(10.3u"Hz", 0).rate == 10.3
+                    @test AmplitudeModulation(10u"Hz", 0.0).rate == 10
+                    @test AmplitudeModulation(10.3u"Hz", 0.0).rate == 10.3
                     @test AmplitudeModulation(10u"Hz", π).rate == 10
-                    @test AmplitudeModulation(10u"Hz", π, 0).rate == 10
+                    @test AmplitudeModulation(10u"Hz", π, 0.0).rate == 10
                     @test AmplitudeModulation(10u"Hz", π, 0.5).rate == 10
                     @test AmplitudeModulation(10.8u"Hz", π, 0.5).rate == 10.8
                     @test AmplitudeModulation(10u"Hz", π, 1.5).rate == 10
@@ -529,6 +529,13 @@ end
                     @test AmplitudeModulation(rate=3).rate == 3
                     @test AmplitudeModulation(phase=3).phase == 3
                     @test AmplitudeModulation(depth=0.5).depth == 0.5
+
+                    # Test defaults
+                    @test AmplitudeModulation().rate == 0
+                    @test AmplitudeModulation().phase == π
+                    @test AmplitudeModulation().depth == 1
+                    @test AmplitudeModulation().enable == true
+                    @test AmplitudeModulation().time == 0
 
                 end
             end

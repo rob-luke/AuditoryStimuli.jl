@@ -21,28 +21,25 @@ am = AmplitudeModulation(1, 0.0, 0.05)
 attenuated_sound = write(am, original_sound)
 ```
 """
-mutable struct AmplitudeModulation
-    rate::Number 
-    phase::Number
-    depth::Number
-    enable::Bool
-    time::Float64
+Base.@kwdef mutable struct AmplitudeModulation
+    rate::Number=0
+    phase::Number=π
+    depth::Number=1
+    enable::Bool=true
+    time::Float64=0.0
+
+    AmplitudeModulation(a, b, c) = new(a, b, c, true, 0.0)
+    AmplitudeModulation(a, b) = new(a, b, 1, true, 0.0)
+    AmplitudeModulation(a) = new(a, π, 1, true, 0.0)
+    AmplitudeModulation() = new(0, π, 1, true, 0.0)
+
+    AmplitudeModulation(;rate::Number=1,
+                         phase::Number=π,
+                         depth::Number=1) = new(rate, phase, depth)
+
 end
 
-# TODO: Must be cleaner way to set defaults
-AmplitudeModulation(a, b, c) = AmplitudeModulation(a, b, c, true, 0)
-AmplitudeModulation(a, b) = AmplitudeModulation(a, b, 1, true, 0)
-AmplitudeModulation(a) = AmplitudeModulation(a, π, 1, true, 0)
-
-# Handle type arguments
 AmplitudeModulation(a::AbstractQuantity, args...) = AmplitudeModulation(a |> u"Hz" |> ustrip, args...)
-
-# TODO: Must be a smarter way to provide keyword functionality
-function AmplitudeModulation(;rate::Number=1,
-                             phase::Number=π,
-                             depth::Number=1)
-    AmplitudeModulation(Float64(rate), Float64(phase), Float64(depth), true, 0)
-end
 
 function modify(sink::AmplitudeModulation, buf)
     start_time = sink.time
