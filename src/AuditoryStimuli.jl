@@ -12,6 +12,7 @@ using Logging
 using FFTW
 using Unitful
 using Plots
+using Parameters
 
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity
 import SampledSignals: nchannels, samplerate, unsafe_read!

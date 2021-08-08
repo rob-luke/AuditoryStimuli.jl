@@ -21,32 +21,28 @@ am = AmplitudeModulation(1, 0.0, 0.05)
 attenuated_sound = write(am, original_sound)
 ```
 """
-Base.@kwdef mutable struct AmplitudeModulation
-    rate::Number=0
+@with_kw mutable struct AmplitudeModulation
+    rate::typeof(1.0u"Hz")=0.0u"Hz"
     phase::Number=π
     depth::Number=1
     enable::Bool=true
     time::Float64=0.0
 
+    AmplitudeModulation(a, b, c, d, e) = new(a, b, c, d, e)
+    AmplitudeModulation(a, b, c, d) = new(a, b, c, d, 0.0)
     AmplitudeModulation(a, b, c) = new(a, b, c, true, 0.0)
     AmplitudeModulation(a, b) = new(a, b, 1, true, 0.0)
     AmplitudeModulation(a) = new(a, π, 1, true, 0.0)
-    AmplitudeModulation() = new(0, π, 1, true, 0.0)
-
-    AmplitudeModulation(;rate::Number=1,
-                         phase::Number=π,
-                         depth::Number=1) = new(rate, phase, depth)
 
 end
 
-AmplitudeModulation(a::AbstractQuantity, args...) = AmplitudeModulation(a |> u"Hz" |> ustrip, args...)
 
 function modify(sink::AmplitudeModulation, buf)
     start_time = sink.time
     end_time = start_time + (size(buf, 1) / samplerate(buf))
     if sink.enable
         t = range(start_time, stop=end_time, length=size(buf, 1))
-        M = 1 .* cos.(2 * π * sink.rate * t .+ sink.phase) .* sink.depth
+        M = 1 .* cos.(2 * π * ustrip(sink.rate) * t .+ sink.phase) .* sink.depth
         buf.data = (1 .+ M) .* buf.data
     end
     sink.time = end_time
