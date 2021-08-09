@@ -5,7 +5,7 @@ using Statistics
 """
     PlotSpectroTemporal(data, sample_rate)
 
-This function plots the time, spectrogram, and periodogram of a signal
+This function plots the time, spectrogram, and periodogram of a signal.
 
 """
 function PlotSpectroTemporal(x::AbstractArray, sample_rate::Number; 
