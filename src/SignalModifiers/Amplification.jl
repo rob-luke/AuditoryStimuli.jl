@@ -3,10 +3,11 @@
 
 Apply amplification to the signal.
 
-This modifier allows the user to specify a `target` amplification
-value, the modifier will then increase the amplification of the
+This modifier allows the user to specify a `target` linear amplification
+value that will be applied to the signal.
+The modifier will then change the amplification of the
 signal until the desired amplification is achieved. The rate
-at which the amplification can be changed is parameterised by
+at which the amplification can be changed per frame is parameterised by
 the `change_limit` parameter.
 
 To slowly ramp a signal to a desired value set the `target` amplification
