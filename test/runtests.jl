@@ -388,6 +388,32 @@ end
 
         @testset "Amplification" begin
 
+            # Test different ways of instanciating the modifier
+            @test Amplification().target == 0
+            @test Amplification().current == 0
+            @test Amplification().change_limit == Inf
+            @test Amplification().enable == true
+            @test Amplification(1).target == 1.0
+            @test Amplification(1, 3).target == 1.0
+            @test Amplification(1, 3).current == 3.0
+            @test Amplification(1, 3, 4, false).change_limit == 4.0
+            @test Amplification(1, 3, 4, false).enable == false
+            @test Amplification(target=3).target == 3
+            @test Amplification(current=3).current == 3
+            @test Amplification(change_limit=3).change_limit == 3
+            @test Amplification(enable=false).enable == false
+            @test Amplification(enable=false, current=2).enable == false
+            @test Amplification(enable=false, current=2).current == 2
+
+            # Ensure disabled does nothing
+            source = NoiseSource(Float64, 48000, 2, 1)
+            sink = DummySampleSink(Float64, 48000, 2)
+            amp = Amplification(2, 3, 0.5, false)
+            data = read(source, 1u"s")
+            @pipe data |> modify(amp, _) |>  write(sink, _)
+            @test sink.buf == data.data
+
+
             desired_rms = 0.3
             amp_mod = 0.1
             num_channels = 1
@@ -543,6 +569,13 @@ end
 
                     # Test bad instansiation
                     @test_logs (:error, "You must use units for modulation rate.")  AmplitudeModulation(33)
+
+                    # Ensure disabled does nothing
+                    sink = DummySampleSink(Float64, 48000, num_channels)
+                    amp = AmplitudeModulation(enable=false)
+                    data = read(source, 1u"s")
+                    @pipe data |> modify(amp, _) |>  write(sink, _)
+                    @test sink.buf == data.data
 
                 end
             end
