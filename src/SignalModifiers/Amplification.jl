@@ -3,10 +3,11 @@
 
 Apply amplification to the signal.
 
-This modifier allows the user to specify a `target` amplification
-value, the modifier will then increase the amplification of the
+This modifier allows the user to specify a `target` linear amplification
+value that will be applied to the signal.
+The modifier will then change the amplification of the
 signal until the desired amplification is achieved. The rate
-at which the amplification can be changed is parameterised by
+at which the amplification can be changed per frame is parameterised by
 the `change_limit` parameter.
 
 To slowly ramp a signal to a desired value set the `target` amplification
@@ -36,17 +37,16 @@ amplify = Amplification(0.1, 0.0, 0.05)
 attenuated_sound = modify(amplify, original_sound)
 ```
 """
-mutable struct Amplification
-    target::Float64           # Desired scaling factor
-    current::Float64          # Current scaling factor
-    change_limit::Float64     # Maximum change in scaling per frame
-    enable::Bool
-end
-Amplification(a, b, c) = Amplification(a, b, c, true)
-function Amplification(;target::Number,
-                        current::Number,
-                        change_limit::Number)
-    Amplification(Float64(target), Float64(current), Float64(change_limit), true)
+@with_kw mutable struct Amplification
+    target::Float64=0             # Desired scaling factor
+    current::Float64=0            # Current scaling factor
+    change_limit::Float64=Inf     # Maximum change in scaling per frame
+    enable::Bool=true             # Enable or pass through the signal
+
+    Amplification(a, b, c, d) = new(a, b, c, d)
+    Amplification(a, b, c) = new(a, b, c, true)
+    Amplification(a, b) = new(a, b, Inf, true)
+    Amplification(a) = new(a, 0, Inf, true)
 end
 
 function modify(sink::Amplification, buf)
