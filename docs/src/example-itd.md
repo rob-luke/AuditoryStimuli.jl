@@ -102,7 +102,7 @@ using Statistics
 cor(sink.buf)[2, 1]
 ```
 
-However, note that if we compute the IAC over a restrited range of lags
+However, note that if we compute the IAC over a restricted range of lags
 then we will miss the peak and thus not report the global maximum.
 By default, as above, the entire range of available lags is used.
 So if we use only a 1 ms window, whereas the itd was 1.25 ms, the IAC
