@@ -40,6 +40,11 @@ ramp_off
 ## Plotting
 
 ```@docs
-Plot
 PlotSpectroTemporal
+```
+
+## Signal Metrics
+
+```@docs
+interaural_coherence
 ```

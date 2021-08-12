@@ -1,4 +1,8 @@
 AmplitudeModulation
+IAC
+iac
+narrowband
+Narrowband
 AuditoryStimuli
 auditorystimuli
 Bandpass
