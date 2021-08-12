@@ -628,6 +628,8 @@ end
             a = read(source, 3u"s")
             @test interaural_coherence(a.data) ≈ correlation atol = 0.025
             @test interaural_coherence(a.data, lags=100) ≈ correlation atol = 0.025
+            @test interaural_coherence(a) ≈ correlation atol = 0.025
+            @test interaural_coherence(a, lags=1u"s") ≈ correlation atol = 0.025
         end
     end
 end
