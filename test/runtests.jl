@@ -323,6 +323,7 @@ end
                     a = read(source, 3u"s")
                     @test std(a) ≈ deviation atol = 0.025
                     @test cor(a.data)[2, 1] ≈ correlation atol = 0.025
+                    @test interaural_coherence(a.data) ≈ correlation atol = 0.025
                 end
             end
         end
@@ -617,3 +618,16 @@ end
     end
 end
 
+
+@testset "Signal Metrics" begin
+
+    @testset "Interaural Coherence" begin
+
+        for correlation = 0.2:0.2:0.8
+            source = CorrelatedNoiseSource(Float64, 48000, 2, 0.4, correlation)
+            a = read(source, 3u"s")
+            @test interaural_coherence(a.data) ≈ correlation atol = 0.025
+            @test interaural_coherence(a.data, lags=100) ≈ correlation atol = 0.025
+        end
+    end
+end

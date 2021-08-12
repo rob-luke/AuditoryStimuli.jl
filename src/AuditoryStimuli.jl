@@ -36,7 +36,8 @@ export  bandpass_noise,
         TimeDelay,
         samplerate,
         modify,
-        plot
+        plot,
+        interaural_coherence
 
 
 include("Plotting.jl")
@@ -59,6 +60,8 @@ include("SignalModifiers/Amplification.jl")
 include("SignalModifiers/BandpassFilter.jl")
 include("SignalModifiers/Modulation.jl")
 include("SignalModifiers/TimeDelay.jl")
+
+include("SignalMetrics/InterauralCoherence.jl")
 
 
 """
