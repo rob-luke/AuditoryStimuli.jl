@@ -12,6 +12,7 @@ using Images
 
 Fs = 48000
 
+ENV["JULIA_DEBUG"] = "all"
 
 @testset "Offline Stimuli" begin
 
@@ -630,6 +631,24 @@ end
             @test interaural_coherence(a.data, lags=100) ≈ correlation atol = 0.025
             @test interaural_coherence(a) ≈ correlation atol = 0.025
             @test interaural_coherence(a, lags=1u"s") ≈ correlation atol = 0.025
+            @test interaural_coherence(a, lags=1.0u"s") ≈ correlation atol = 0.025
+            @test interaural_coherence(a, lags=900u"ms") ≈ correlation atol = 0.025
         end
+
+        # Test still works when ITD applied
+        correlation = 0.5
+        delay_samples = 100
+        delay_time = (delay_samples / 48000)u"s"
+        source = CorrelatedNoiseSource(Float64, 48000, 2, 0.4, correlation)
+        itd = TimeDelay(1, 22)
+        sink = DummySampleSink(Float64, 48000, 2)
+        @pipe read(source, 3u"s") |> modify(itd, _) |> write(sink, _)
+        @test interaural_coherence(sink) ≈ correlation atol = 0.025
+        @test interaural_coherence(sink, lags=2*delay_time) ≈ correlation atol = 0.025
+
+        # Whereas if the range of lags doesnt encompas the maximum the iac will be
+        # less than the global maximum
+        @test interaural_coherence(sink, lags=0.1*delay_time) < (correlation - 0.1) 
+
     end
 end

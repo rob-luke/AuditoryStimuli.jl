@@ -9,7 +9,7 @@ Chicago
 
 
 
-### Realtime Example
+### Realtime Example: Broadband Signal
 
 In this example we apply a 48 sample delay to the second channel (right ear).
 When presented over headphones this causes the sound to be perceived as arriving from the left,
@@ -25,7 +25,6 @@ using DisplayAs # hide
 source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.2, 1)
 itd_left = TimeDelay(2, 48, true)
 sink = DummySampleSink(Float64, 48u"kHz", 2)
-
 
 # Run real time audio processing
 for frame = 1:100
@@ -44,9 +43,71 @@ The stimulus output can be validated by observing that the peak in the cross cor
 ```@example realtime
 using StatsBase
 
-lags = round.(Int, -60:1:60)
+lags = round.(Int, -120:1:120)
 plot(lags, crosscor(sink.buf[:, 1], sink.buf[:, 2], lags),
      label="", ylab="Cross Correlation", xlab="Lag (samples)")
 current() |> DisplayAs.PNG # hide
 ```
 
+### Realtime Example: Narrowband Signal
+
+If we desire a narrowband signal with reduced coherence
+then we can still use the same functional blocks.
+
+```@example realtime
+source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.2, 0.6)
+
+responsetype = Bandpass(300, 700; fs=48000)
+designmethod = Butterworth(14)
+zpg = digitalfilter(responsetype, designmethod)
+f_left = DSP.Filters.DF2TFilter(zpg)
+f_right = DSP.Filters.DF2TFilter(zpg)
+bp = AuditoryStimuli.Filter([f_left, f_right])
+
+itd_left = TimeDelay(2, 60, true)
+
+sink = DummySampleSink(Float64, 48u"kHz", 2)
+
+for frame = 1:1000
+    @pipe read(source, 1/100u"s") |> modify(bp, _) |> modify(itd_left, _) |> write(sink, _)
+end
+
+plot(sink, label=["Left" "Right"])
+current() |> DisplayAs.PNG # hide
+```
+
+As expected the cross-correlation function will now be damped,
+but the peak should still be equal to the correlation of the signals,
+and the peak shift should correspond to the applied time delay.
+
+```@example realtime
+lags = round.(Int, -200:1:200)
+plot(lags, crosscor(sink.buf[:, 1], sink.buf[:, 2], lags),
+     label="", ylab="Cross Correlation", xlab="Lag (samples)", ylims=(-1, 1))
+current() |> DisplayAs.PNG # hide
+```
+
+And we can use the convenience function to determine the interaural coherence (IAC)
+of the signal, which should be approximately 0.6 as set above.
+
+```@example realtime
+interaural_coherence(sink)
+```
+
+Whereas if we used the naive correlation implementation from StatsBase we would
+be extracting the cross correlation value at zero.
+
+```@example realtime
+using Statistics
+cor(sink.buf)[2, 1]
+```
+
+However, note that if we compute the IAC over a restrited range of lags
+then we will miss the peak and thus not report the global maximum.
+By default, as above, the entire range of available lags is used.
+So if we use only a 1 ms window, whereas the itd was 1.25 ms, the IAC
+will be under reported.
+
+```@example realtime
+interaural_coherence(sink, lags=1u"ms")
+```
