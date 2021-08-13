@@ -41,7 +41,7 @@ current() |> DisplayAs.PNG # hide
 The stimulus output can be validated by observing that the peak in the cross correlation function occurs at 48 samples.
 
 ```@example realtime
-plot_cross_correlation(sink.buf, lags=100)
+plot_cross_correlation(sink, lags=2u"ms")
 current() |> DisplayAs.PNG # hide
 ```
 
@@ -77,7 +77,7 @@ but the peak should still be equal to the correlation of the signals,
 and the peak shift should correspond to the applied time delay.
 
 ```@example realtime
-plot_cross_correlation(sink.buf, lags=200)
+plot_cross_correlation(sink, lags=4u"ms")
 current() |> DisplayAs.PNG # hide
 ```
 

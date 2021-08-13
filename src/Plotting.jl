@@ -73,16 +73,25 @@ function vector_pow2db(a::Vector)
 end
 
 
+function plot_cross_correlation(x::T; lags::AbstractQuantity=0u"s") where {T<:DummySampleSink}
 
-function plot_cross_correlation(x::Array{T, 2}; lags::Int=0) where {T<:Number}
+    lags_seconds = lags |> u"s" |> ustrip
+    lags_samples = Int(lags_seconds * x.samplerate)
+    plot_cross_correlation(x.buf, lags_samples, x.samplerate)
+end
+
+function plot_cross_correlation(x::Array{T, 2}, lags::Int, samplerate::Number) where {T<:Number}
 
     if lags == 0
         lags = size(x, 1) - 1
     end
     lags = round.(Int, -lags:1:lags)
 
-    plot(lags, crosscor(x[:, 1], x[:, 2], lags),
-         label="", ylab="Cross Correlation", xlab="Lag (samples)", ylims=(-1, 1))
+    lag_times = lags ./ samplerate
+    lag_times = lag_times .* 1.0u"s"
+
+    plot(lag_times, crosscor(x[:, 1], x[:, 2], lags),
+         label="", ylab="Cross Correlation", xlab="Lag", ylims=(-1, 1))
 
 end
 
