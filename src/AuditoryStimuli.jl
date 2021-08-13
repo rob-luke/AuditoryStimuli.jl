@@ -37,7 +37,8 @@ export  bandpass_noise,
         samplerate,
         modify,
         plot,
-        interaural_coherence
+        interaural_coherence,
+        plot_cross_correlation
 
 
 include("Plotting.jl")

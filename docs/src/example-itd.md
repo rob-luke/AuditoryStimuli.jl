@@ -41,11 +41,7 @@ current() |> DisplayAs.PNG # hide
 The stimulus output can be validated by observing that the peak in the cross correlation function occurs at 48 samples.
 
 ```@example realtime
-using StatsBase
-
-lags = round.(Int, -120:1:120)
-plot(lags, crosscor(sink.buf[:, 1], sink.buf[:, 2], lags),
-     label="", ylab="Cross Correlation", xlab="Lag (samples)")
+plot_cross_correlation(sink.buf, lags=100)
 current() |> DisplayAs.PNG # hide
 ```
 
@@ -81,9 +77,7 @@ but the peak should still be equal to the correlation of the signals,
 and the peak shift should correspond to the applied time delay.
 
 ```@example realtime
-lags = round.(Int, -200:1:200)
-plot(lags, crosscor(sink.buf[:, 1], sink.buf[:, 2], lags),
-     label="", ylab="Cross Correlation", xlab="Lag (samples)", ylims=(-1, 1))
+plot_cross_correlation(sink.buf, lags=200)
 current() |> DisplayAs.PNG # hide
 ```
 
