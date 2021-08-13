@@ -1,5 +1,6 @@
 """
     TimeDelay(channel, delay, enable, buffer)
+    TimeDelay(channel, delay, enable, buffer; samplerate)
 
 Delay the signal in specified channel.
 
@@ -9,6 +10,7 @@ Inputs
 * `delay` delay to be applied in samples.  
 * `enable` should the modifier be enabled.
 * `buffer` initial values with which to pad the time delay. Defaults to zeros.
+* `samplerate` keyword argument required if delay is specified in unit of time.
 
 
 Example
@@ -23,6 +25,20 @@ Base.@kwdef mutable struct TimeDelay
     delay::Int=0
     enable::Bool=true
     buffer::Array=[]
+
+    function TimeDelay(c::Int, d::AbstractQuantity, args...; samplerate::Number)
+        if isa(samplerate, AbstractQuantity)
+            samplerate= samplerate |> u"Hz" |> ustrip
+        end
+        delay_seconds = d |> u"s" |> ustrip
+        delay_samples = delay_seconds * samplerate
+        if round(delay_samples) != delay_samples
+            @info "Not rounded number of samples $delay_samples"
+            delay_samples = round(delay_samples)
+        end
+        delay_samples = Int(delay_samples)
+        TimeDelay(c, delay_samples, args...)
+    end
 
     function TimeDelay(c::Int, d::Int, e::Bool, b::Array)
         d >= 0 || error("Delay must be positive")

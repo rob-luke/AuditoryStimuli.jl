@@ -21,16 +21,12 @@ using AuditoryStimuli, Unitful, Plots, Pipe, DSP
 default(size=(700, 300)) # hide
 using DisplayAs # hide
 
-# Specify the source, modifiers, and sink of our audio pipeline
 source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.2, 1)
-itd_left = TimeDelay(2, 48, true)
+itd_left = TimeDelay(2, 0.5u"ms", samplerate=48u"kHz")
 sink = DummySampleSink(Float64, 48u"kHz", 2)
 
-# Run real time audio processing
 for frame = 1:100
-
     @pipe read(source, 1/100u"s") |> modify(itd_left, _) |> write(sink, _)
-
 end
 
 # Validate the audio pipeline output
@@ -60,8 +56,7 @@ f_left = DSP.Filters.DF2TFilter(zpg)
 f_right = DSP.Filters.DF2TFilter(zpg)
 bp = AuditoryStimuli.Filter([f_left, f_right])
 
-itd_left = TimeDelay(2, 60, true)
-
+itd_left = TimeDelay(2, 1.25u"ms", samplerate=48u"kHz")
 sink = DummySampleSink(Float64, 48u"kHz", 2)
 
 for frame = 1:1000

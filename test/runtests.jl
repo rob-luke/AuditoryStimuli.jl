@@ -241,6 +241,11 @@ ENV["JULIA_DEBUG"] = "all"
         p = plot(sink)
         @test isa(p, Plots.Plot) == true
 
+        p = plot_cross_correlation(sink)
+        @test isa(p, Plots.Plot) == true
+        p = plot_cross_correlation(sink, lags=0.1u"s")
+        @test isa(p, Plots.Plot) == true
+
         end
     end
 end
