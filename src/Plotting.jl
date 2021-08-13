@@ -70,5 +70,19 @@ function vector_pow2db(a::Vector)
         a[index] = pow2db(a[index])
     end
     return a
-end;
+end
+
+
+
+function plot_cross_correlation(x::Array{T, 2}; lags::Int=0) where {T<:Number}
+
+    if lags == 0
+        lags = size(x, 1) - 1
+    end
+    lags = round.(Int, -lags:1:lags)
+
+    plot(lags, crosscor(x[:, 1], x[:, 2], lags),
+         label="", ylab="Cross Correlation", xlab="Lag (samples)", ylims=(-1, 1))
+
+end
 
