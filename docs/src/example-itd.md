@@ -1,17 +1,19 @@
 # Example: Interaural Time Delay
 
 Stimuli with a delay applied to one ear causes the sound to be perceived
-as coming from a different direction.
-These stimuli are commonly used to investigate source localisation algorithms [1].
+as coming from a different direction [1].
+These stimuli are commonly used to investigate source localisation algorithms [2].
 
-[1] Luke, R., & McAlpine, D. (2019, May). A spiking neural network approach to auditory source lateralisation. In ICASSP 2019-2019 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) (pp. 1488-1492). IEEE.
+[1] Grothe, Benedikt, Michael Pecka, and David McAlpine. "Mechanisms of sound localization in mammals." Physiological reviews 90.3 (2010): 983-1012.
+
+[2] Luke, R., & McAlpine, D. (2019, May). A spiking neural network approach to auditory source lateralisation. In ICASSP 2019-2019 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) (pp. 1488-1492). IEEE.
 Chicago	
 
 
 
 ### Realtime Example: Broadband Signal
 
-In this example we apply a 48 sample delay to the second channel (right ear).
+In this example we apply a 0.5 ms delay to the second channel (right ear).
 When presented over headphones this causes the sound to be perceived as arriving from the left,
 as the sound arrives at the left ear first.
 
@@ -34,7 +36,7 @@ plot(sink, label=["Left" "Right"])
 current() |> DisplayAs.PNG # hide
 ```
 
-The stimulus output can be validated by observing that the peak in the cross correlation function occurs at 48 samples.
+The stimulus output can be validated by observing that the peak in the cross correlation function occurs at 0.5 ms.
 
 ```@example realtime
 plot_cross_correlation(sink, lags=2u"ms")
@@ -45,6 +47,7 @@ current() |> DisplayAs.PNG # hide
 
 If we desire a narrowband signal with reduced coherence
 then we can still use the same functional blocks.
+
 
 ```@example realtime
 source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.2, 0.6)
