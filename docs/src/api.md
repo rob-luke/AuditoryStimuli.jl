@@ -41,6 +41,7 @@ ramp_off
 
 ```@docs
 PlotSpectroTemporal
+plot_cross_correlation
 ```
 
 ## Signal Metrics
