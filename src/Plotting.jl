@@ -70,5 +70,54 @@ function vector_pow2db(a::Vector)
         a[index] = pow2db(a[index])
     end
     return a
-end;
+end
+
+
+function plot_cross_correlation(x::T; lags::AbstractQuantity=0u"s") where {T<:DummySampleSink}
+
+    lags_seconds = lags |> u"s" |> ustrip
+    lags_samples = Int(lags_seconds * x.samplerate)
+    plot_cross_correlation(x.buf, lags_samples, x.samplerate)
+end
+
+
+"""
+    plot_cross_correlation(x::SampleBuf, lags::Unitful.Time)
+
+Plot the cross correlation
+
+Inputs
+------
+* `x` data in the form of SampledSignals.SampleBuf. Must be two channels of audio.
+* `lags` time range of lags to be used for finding maximum in cross correlation function.
+  If lags=0, then the entire function will be used, effecively same as lags=Inf.
+
+References
+----------
+1. Chait, M., Poeppel, D., de Cheveigne, A., and Simon, J.Z. (2005). Human auditory cortical processing of changes in interaural correlation. J Neurosci 25, 8518-8527.
+2. Aaronson, N.L., and Hartmann, W.M. (2010). Interaural coherence for noise bands: waveforms and envelopes. J Acoust Soc Am 127, 1367-1372.
+
+Example
+-------
+```julia
+correlation = 0.6
+source = CorrelatedNoiseSource(Float64, 48000, 2, 0.1, correlation)
+a = read(source, 3u"s")
+@test interaural_coherence(a.data) ≈ correlation atol = 0.025
+```
+"""
+function plot_cross_correlation(x::Array{T, 2}, lags::Int, samplerate::Number) where {T<:Number}
+
+    if lags == 0
+        lags = size(x, 1) - 1
+    end
+    lags = round.(Int, -lags:1:lags)
+
+    lag_times = lags ./ samplerate
+    lag_times = lag_times .* 1.0u"s"
+
+    plot(lag_times, crosscor(x[:, 1], x[:, 2], lags),
+         label="", ylab="Cross Correlation", xlab="Lag", ylims=(-1, 1))
+
+end
 

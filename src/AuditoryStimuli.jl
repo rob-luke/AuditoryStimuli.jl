@@ -12,6 +12,7 @@ using Logging
 using FFTW
 using Unitful
 using Plots
+using UnitfulRecipes
 using Parameters
 
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity
@@ -37,10 +38,10 @@ export  bandpass_noise,
         samplerate,
         modify,
         plot,
-        interaural_coherence
+        interaural_coherence,
+        plot_cross_correlation
 
 
-include("Plotting.jl")
 
 
 # #########################################
@@ -61,7 +62,17 @@ include("SignalModifiers/BandpassFilter.jl")
 include("SignalModifiers/Modulation.jl")
 include("SignalModifiers/TimeDelay.jl")
 
+# #########################################
+# #####  Signal Metrics
+# #########################################
+
 include("SignalMetrics/InterauralCoherence.jl")
+
+# #########################################
+# #####  Signal Plotting
+# #########################################
+
+include("Plotting.jl")
 
 
 """
