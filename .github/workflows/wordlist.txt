@@ -15,6 +15,7 @@ crosscor
 designmethod
 Deun
 DF
+samplerate
 digitalfilter
 DisplayAs
 DSP
