@@ -600,6 +600,7 @@ end
             itd = TimeDelay(channel=33)
             itd = TimeDelay(enable=false, channel=3)
             itd = TimeDelay(2, 0.5u"ms", samplerate=48u"kHz")
+            itd = TimeDelay(2, 0.48u"ms", samplerate=48u"kHz")
 
             # Test correct behaiour
             for desired_itd = -100:10:100
