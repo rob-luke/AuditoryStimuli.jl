@@ -2,13 +2,13 @@
     TimeDelay(channel, delay, enable, buffer)
     TimeDelay(channel, delay, enable, buffer; samplerate)
 
-Delay the signal in specified channel.
+Apply a time delay to a specific channel.
 
 Inputs
 ------
 * `channel` which channel should have a time delay applied.
-* `delay` delay to be applied in samples.  
-* `enable` should the modifier be enabled.
+* `delay` delay to be applied in samples or unit of time.  
+* `enable` should the modifier be enabled. Defaults to true.
 * `buffer` initial values with which to pad the time delay. Defaults to zeros.
 * `samplerate` keyword argument required if delay is specified in unit of time.
 
@@ -16,7 +16,7 @@ Inputs
 Example
 -------
 ```julia
-itd = TimeDelay(2, 12)
+itd = TimeDelay(2, 0.5u"ms", samplerate=48u"kHz")
 sound_with_itd = modify(itd, original_sound)
 ```
 """
