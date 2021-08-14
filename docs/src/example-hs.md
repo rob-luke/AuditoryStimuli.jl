@@ -46,7 +46,7 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 stack_frequencies = 200:200:2400
-source = SinusoidSource(Float64, 48000, stack_frequencies)
+source = SinusoidSource(Float64, 48u"kHz", stack_frequencies)
 am = AmplitudeModulation(15u"Hz")
 
 audio = read(source, 1.0u"s") 

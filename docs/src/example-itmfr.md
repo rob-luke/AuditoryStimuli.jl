@@ -35,8 +35,8 @@ f_left = DSP.Filters.DF2TFilter(zpg)
 f_right = DSP.Filters.DF2TFilter(zpg)
 bp = AuditoryStimuli.Filter([f_left, f_right])
 
-itd_left = TimeDelay(2, 48, true)
-itd_right = TimeDelay(1, 48, false)
+itd_left = TimeDelay(2, 1u"ms", true)
+itd_right = TimeDelay(1, 1u"ms", false)
 
 # Run real time audio processing
 for frame = 1:4

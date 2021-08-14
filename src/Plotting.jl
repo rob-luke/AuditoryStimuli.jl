@@ -91,26 +91,21 @@ end
 """
     plot_cross_correlation(x::SampleBuf, lags::Unitful.Time)
 
-Plot the cross correlation
+Plot the cross correlation of a two channel audio signal.
 
 Inputs
 ------
 * `x` data in the form of SampledSignals.SampleBuf. Must be two channels of audio.
-* `lags` time range of lags to be used for finding maximum in cross correlation function.
+* `lags` time range of lags to be used when plotting the cross correlation function.
   If lags=0, then the entire function will be used, effecively same as lags=Inf.
-
-References
-----------
-1. Chait, M., Poeppel, D., de Cheveigne, A., and Simon, J.Z. (2005). Human auditory cortical processing of changes in interaural correlation. J Neurosci 25, 8518-8527.
-2. Aaronson, N.L., and Hartmann, W.M. (2010). Interaural coherence for noise bands: waveforms and envelopes. J Acoust Soc Am 127, 1367-1372.
 
 Example
 -------
 ```julia
 correlation = 0.6
-source = CorrelatedNoiseSource(Float64, 48000, 2, 0.1, correlation)
+source = CorrelatedNoiseSource(Float64, 48u"kHz, 2, 0.1, correlation)
 a = read(source, 3u"s")
-@test interaural_coherence(a.data) ≈ correlation atol = 0.025
+plot_cross_correlation(a, lags=4u"ms")
 ```
 """
 function plot_cross_correlation(x::Array{T, 2}, lags::Int, samplerate::Number) where {T<:Number}
