@@ -103,7 +103,7 @@ Example
 -------
 ```julia
 correlation = 0.6
-source = CorrelatedNoiseSource(Float64, 48u"kHz, 2, 0.1, correlation)
+source = CorrelatedNoiseSource(Float64, 48u"kHz", 2, 0.1, correlation)
 a = read(source, 3u"s")
 plot_cross_correlation(a, lags=4u"ms")
 ```
