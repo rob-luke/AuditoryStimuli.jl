@@ -235,6 +235,7 @@ ENV["JULIA_DEBUG"] = "all"
 
         source = NoiseSource(Float64, 48000, 2, 0.1)
         sink = DummySampleSink(Float64, 48000, 2)
+        some_data = read(source, 3.0u"s"/frames)
         @pipe read(source, 3.0u"s"/frames) |>  write(sink, _)
         p = PlotSpectroTemporal(sink)
         @test isa(p, Plots.Plot) == true
@@ -244,6 +245,8 @@ ENV["JULIA_DEBUG"] = "all"
         p = plot_cross_correlation(sink)
         @test isa(p, Plots.Plot) == true
         p = plot_cross_correlation(sink, lags=0.1u"s")
+        @test isa(p, Plots.Plot) == true
+        p = plot_cross_correlation(some_data)
         @test isa(p, Plots.Plot) == true
 
         end
@@ -591,16 +594,18 @@ end
         @testset "ITD" begin
 
             # Test instansiation
-            itd = TimeDelay()
-            itd = TimeDelay(2)
-            itd = TimeDelay(1, 22)
-            itd = TimeDelay(1, 22, false)
-            itd = TimeDelay(1, 22, false, ones(22, 1))
-            itd = TimeDelay(delay=33, buffer=zeros(33, 1))
-            itd = TimeDelay(channel=33)
-            itd = TimeDelay(enable=false, channel=3)
-            itd = TimeDelay(2, 0.5u"ms", samplerate=48u"kHz")
-            itd = TimeDelay(2, 0.48u"ms", samplerate=48u"kHz")
+            @test TimeDelay().channel == 1
+            @test TimeDelay(2).channel == 2
+            @test TimeDelay(1, 22).delay == 22
+            @test TimeDelay(1, 22, false).delay == 22
+            @test TimeDelay(1, 22, false, ones(22, 1)).buffer == ones(22, 1)
+            @test TimeDelay(delay=33, buffer=zeros(33, 1)).delay == 33
+            @test TimeDelay(channel=33).channel == 33
+            @test TimeDelay(enable=false, channel=3).channel == 3
+            @test TimeDelay(enable=false, channel=3).enable == false
+            @test TimeDelay(2, 0.5u"ms", samplerate=48u"kHz").delay == 24
+            @test TimeDelay(2, 1u"ms", samplerate=48u"kHz").delay == 48
+            @test_logs (:info, "Not rounded number of samples 23.04") TimeDelay(2, 0.48u"ms", samplerate=48u"kHz")
 
             # Test correct behaiour
             for desired_itd = -100:10:100
