@@ -17,8 +17,8 @@ using DisplayAs # hide
 # Specify the source, modifiers, and sink of our audio pipeline
 stack_frequencies = 200:200:2400
 source = SinusoidSource(Float64, 48u"kHz", stack_frequencies)
-amp = Amplification(current=1/length(stack_frequencies),
-                    target=1/length(stack_frequencies),
+amp = Amplification(current=2/length(stack_frequencies),
+                    target=2/length(stack_frequencies),
                     change_limit=1)
 am = AmplitudeModulation(15u"Hz")
 sink = DummySampleSink(Float64, 48u"kHz", 1)
@@ -46,7 +46,7 @@ default(size=(700, 300)) # hide
 using DisplayAs # hide
 
 stack_frequencies = 200:200:2400
-source = SinusoidSource(Float64, 48000, stack_frequencies)
+source = SinusoidSource(Float64, 48u"kHz", stack_frequencies)
 am = AmplitudeModulation(15u"Hz")
 
 audio = read(source, 1.0u"s") 
