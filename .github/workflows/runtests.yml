@@ -6,6 +6,8 @@ on:
     branches:
       - main
     tags: '*'
+  schedule:
+    - cron: "1 13 * * 1"
 
 
 jobs:
