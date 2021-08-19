@@ -21,6 +21,15 @@ It also provides high level convenience functions and examples for common stimul
 
 https://rob-luke.github.io/AuditoryStimuli.jl
 
+## Community guidelines
+
+I warmly welcome any contributions from the community.
+This may take the form of feedback via the issues list,
+bug reports (also via the issues list),
+code submission (via pull requests).
+Please feel free to suggest features, or additional stimuli you are interested in.
+Or if you just want to show support, click the star button at the top of the page.
+
 
 ## Acknowledgements
 
