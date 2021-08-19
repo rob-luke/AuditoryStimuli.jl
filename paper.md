@@ -38,7 +38,7 @@ And includes an issue tracker and means to submit code improvements.
 
 `AuditoryStimuli.jl` is specifically developed for real-time audio research applications.
 A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
-and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa].
+and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa; @kim2017fast].
 As such, this package does not focus on providing the scaffolding for traditional experimentation
 such as block design experiments or alternative forced choice procedures;
 users are directed to existing tools such as [@pychoacoustics] for this purpose.
