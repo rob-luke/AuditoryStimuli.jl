@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest additions or improvements to MNE-Python.
+about: Suggest additions or improvements to AuditoryStimuli.jl.
 title: ''
 labels: ENH
 assignees: ''
