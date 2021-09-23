@@ -34,7 +34,6 @@ However, despite being critical for conducting reproducible experiments, standar
 A large portion of stimulus signals for auditory research are generated with privately shared code fragments,
 without version control or efficient means of reporting errors.
 As such, this package provides a documented and version-controlled open-source framework for generating auditory stimuli.
-And includes an issue tracker and means to submit code improvements.
 
 `AuditoryStimuli.jl` is specifically developed for real-time audio research applications.
 A variety of software packages already exist for controlling the presentation of traditional block-design psychoacoustic experiments [@psychopy2; @pychoacoustics; @Schönwiesner2021],
@@ -43,7 +42,7 @@ As such, this package does not focus on providing the scaffolding for traditiona
 such as block design experiments or alternative forced choice procedures;
 users are directed to existing tools such as [@pychoacoustics] for this purpose.
 Instead this package fills the need for a frame-based real-time signal processing framework.
-`AuditoryStimuli.jl`  provides tools to generate real-time audio signals that can be dynamically adapted to the users responses or state.
+`AuditoryStimuli.jl`  provides tools to generate real-time audio signals that can be dynamically adapted to the participant's responses or state.
 I.e., the stimulus properties may change continuously and dynamically on a scale of milliseconds, rather than in pre-generated signals on the scale of seconds.
 
 Real-time audio stimulus generation is also required for brain computer interface applications.
@@ -81,12 +80,12 @@ And tutorials are provided in the documentation which demonstrate how these gene
 Taken together, the `AuditoryStimuli.jl` package fills a need within the auditory research community for a open-source real-time audio framework.
 The package addresses the communities need for a frame-based audio framework,
 that is computationally efficient and can be used in neuro feedback applications as well as audio processing development.
-An issue tracker and means for code contribution are provided.
-And the package provides installation instructions, documentation, and tutorials.
+An issue tracker and means for code contribution are provided,
+and the package provides installation instructions, documentation, and tutorials.
 
 # Audience
 
-`AuditoryStimuli.jl` is designed for students and researchs of all levels in the fields of auditory perception science, auditory neuroscience, neurofeedback research, and audio signal processing engineering.
+`AuditoryStimuli.jl` is designed for students and researchers of all levels in the fields of auditory perception science, auditory neuroscience, neurofeedback research, and audio signal processing engineering.
 
 
 # Notes
