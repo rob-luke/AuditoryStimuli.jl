@@ -40,10 +40,10 @@ A variety of software packages already exist for controlling the presentation of
 and the post-processing the analysis of acoustic signals [@python-sofa; @mcfee2015librosa; @kim2017fast].
 As such, this package does not focus on providing the scaffolding for traditional experimentation
 such as block design experiments or alternative forced choice procedures;
-users are directed to existing tools such as [@pychoacoustics] for this purpose.
+users are directed to existing tools such as @pychoacoustics for this purpose.
 Instead this package fills the need for a frame-based real-time signal processing framework.
 `AuditoryStimuli.jl`  provides tools to generate real-time audio signals that can be dynamically adapted to the participant's responses or state.
-I.e., the stimulus properties may change continuously and dynamically on a scale of milliseconds, rather than in pre-generated signals on the scale of seconds.
+That is, the stimulus properties may change continuously and dynamically on a scale of milliseconds, rather than in pre-generated signals on the scale of seconds.
 
 Real-time audio stimulus generation is also required for brain computer interface applications.
 For example, methods have been developed to measure the brains response to sounds in real time [@DECHEVEIGNE2018206; @luke2016kalman].
@@ -90,7 +90,7 @@ and the package provides installation instructions, documentation, and tutorials
 
 # Notes
 
-This software was used to generate stimuli for [@luke2021analysis].
+This software was used to generate stimuli for @luke2021analysis.
 
 
 # References
