@@ -7,3 +7,4 @@ authors:
 title: AuditoryStimuli.jl: A Julia package for generating real-time auditory stimuli
 doi: 10.21105/joss.03613
 date-released: 2021-09-27
+version: v1.0.0
