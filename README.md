@@ -40,3 +40,10 @@ This package is built on top of the excellent packages:
 * [SampledSignals](https://github.com/JuliaAudio/SampledSignals.jl)
 * [Unitful](https://github.com/ajkeller34/Unitful.jl)
 * [Plots](https://github.com/JuliaPlots/Plots.jl)
+
+If you use this package please cite:
+
+```text
+Luke, R., (2021). AuditoryStimuli.jl: A Julia package for generating real-time auditory stimuli.
+Journal of Open Source Software, 6(65), 3613, https://doi.org/10.21105/joss.03613
+```
