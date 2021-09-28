@@ -4,7 +4,6 @@ authors:
   - family-names: Luke
     given-names: Robert
     orcid: https://orcid.org/0000-0002-4930-8351
-title: AuditoryStimuli.jl A Julia package for generating real-time auditory stimuli
+title: AuditoryStimuli.jl{:} A Julia package for generating real-time auditory stimuli
 doi: 10.21105/joss.03613
 date-released: 2021-09-27
-version: v1.0.0
