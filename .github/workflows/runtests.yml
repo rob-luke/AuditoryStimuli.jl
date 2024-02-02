@@ -21,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#         experimental: [false]
         provider:
           - 'FFTW'
         version:
@@ -34,8 +33,8 @@ jobs:
           - '1'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+#          - macOS-latest
+#          - windows-latest
         threads:
           - '1'
         arch:

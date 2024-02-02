@@ -12,7 +12,6 @@ using Logging
 using FFTW
 using Unitful
 using Plots
-using UnitfulRecipes
 using Parameters
 
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity
