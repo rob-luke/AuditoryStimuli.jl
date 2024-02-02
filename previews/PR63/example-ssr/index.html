@@ -12,7 +12,7 @@ for frame = 1:100
 end
 
 # Validate the audio pipeline output
-plot(sink, label=&quot;&quot;)</code></pre><img src="accee082.png" alt="Example block output"/><h3 id="Offline-Example"><a class="docs-heading-anchor" href="#Offline-Example">Offline Example</a><a id="Offline-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Offline-Example" title="Permalink"></a></h3><p>It is also possible to generate the audio in an offline (all in one step) manner. This may be useful for creating wav files for use in simpler experiments.</p><pre><code class="language-julia hljs">using AuditoryStimuli, Unitful, Plots, WAV
+plot(sink, label=&quot;&quot;)</code></pre><img src="09d69a18.png" alt="Example block output"/><h3 id="Offline-Example"><a class="docs-heading-anchor" href="#Offline-Example">Offline Example</a><a id="Offline-Example-1"></a><a class="docs-heading-anchor-permalink" href="#Offline-Example" title="Permalink"></a></h3><p>It is also possible to generate the audio in an offline (all in one step) manner. This may be useful for creating wav files for use in simpler experiments.</p><pre><code class="language-julia hljs">using AuditoryStimuli, Unitful, Plots, WAV
 
 # Specify the source, modifiers, and sink of our audio pipeline
 source = NoiseSource(Float64, 48u&quot;kHz&quot;, 1, 0.2)
