@@ -42,10 +42,10 @@ jobs:
             arch: x86
           # 32-bit Linux binary for MKL isn't always available, let's ignore it
           - os: ubuntu-latest
-            provider: 'MKL'
+#            provider: 'MKL'
             arch: x86
-          - provider: 'MKL'
-            threads: '2'
+#          - provider: 'MKL'
+#            threads: '2'
 #         include:
 #           - version: 'nightly'
 #             experimental: true
