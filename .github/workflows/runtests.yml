@@ -13,23 +13,19 @@ on:
 jobs:
   test:
     timeout-minutes: 45
-    name: ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - provider ${{ matrix.provider }} - ${{ matrix.threads }} thread(s)
+    name: ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ matrix.threads }} thread(s)
     runs-on: ${{ matrix.os }}
     env:
-      JULIA_FFTW_PROVIDER: ${{ matrix.provider }}
       JULIA_NUM_THREADS: ${{ matrix.threads }}
     strategy:
       fail-fast: false
       matrix:
-        provider:
-          - 'FFTW'
         version:
           - '1.10'
           - '1.9'
           - '1.8'
           - '1.7'
           - '1.6'
-          - '1.5'
 #          - '1'
         os:
           - ubuntu-latest
@@ -46,10 +42,10 @@ jobs:
             arch: x86
           # 32-bit Linux binary for MKL isn't always available, let's ignore it
           - os: ubuntu-latest
-            provider: 'MKL'
+#            provider: 'MKL'
             arch: x86
-          - provider: 'MKL'
-            threads: '2'
+#          - provider: 'MKL'
+#            threads: '2'
 #         include:
 #           - version: 'nightly'
 #             experimental: true
