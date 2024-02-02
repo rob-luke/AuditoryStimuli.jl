@@ -27,32 +27,18 @@ jobs:
           - '1.7'
         os:
           - ubuntu-latest
-#          - macOS-latest
+          - macOS-latest
 #          - windows-latest
         threads:
           - '1'
         arch:
           - x64
-#           - x86
-        exclude:
-          # 32-bit Julia binaries are not available on macOS 
-          - os: macOS-latest
-            arch: x86
-          # 32-bit Linux binary for MKL isn't always available, let's ignore it
-          - os: ubuntu-latest
-#            provider: 'MKL'
-            arch: x86
-#          - provider: 'MKL'
-#            threads: '2'
-#         include:
-#           - version: 'nightly'
-#             experimental: true
-
     steps:
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
+      - uses: julia-actions/cache@v1
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
