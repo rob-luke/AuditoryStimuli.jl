@@ -42,7 +42,7 @@ jobs:
           - x64
 #           - x86
         exclude:
-          # 32-bit Julia binaries are not available on macOS
+          # 32-bit Julia binaries are not available on macOS 
           - os: macOS-latest
             arch: x86
           # 32-bit Linux binary for MKL isn't always available, let's ignore it
