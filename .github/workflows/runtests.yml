@@ -13,39 +13,37 @@ on:
 jobs:
   test:
     timeout-minutes: 45
-    name: ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - provider ${{ matrix.provider }} - ${{ matrix.threads }} thread(s)
+    name: ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ matrix.threads }} thread(s)
     runs-on: ${{ matrix.os }}
     env:
-      JULIA_FFTW_PROVIDER: ${{ matrix.provider }}
       JULIA_NUM_THREADS: ${{ matrix.threads }}
     strategy:
       fail-fast: false
       matrix:
-#         experimental: [false]
-        provider:
-          - 'FFTW'
         version:
-          - '1.5'
-          - '1'
+          - '1.10'
+          - '1.9'
+          - '1.8'
+          - '1.7'
         os:
           - ubuntu-latest
-          - macOS-latest
-          - windows-latest
+#          - macOS-latest
+#          - windows-latest
         threads:
           - '1'
         arch:
           - x64
 #           - x86
         exclude:
-          # 32-bit Julia binaries are not available on macOS
+          # 32-bit Julia binaries are not available on macOS 
           - os: macOS-latest
             arch: x86
           # 32-bit Linux binary for MKL isn't always available, let's ignore it
           - os: ubuntu-latest
-            provider: 'MKL'
+#            provider: 'MKL'
             arch: x86
-          - provider: 'MKL'
-            threads: '2'
+#          - provider: 'MKL'
+#            threads: '2'
 #         include:
 #           - version: 'nightly'
 #             experimental: true

@@ -1,4 +1,5 @@
 [deps]
+AuditoryStimuli = "8341a549-d843-5d3b-924f-10e41641b3ea"
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 DisplayAs = "0b91fe84-8a4c-11e9-3e1d-67c38462b6d6"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"

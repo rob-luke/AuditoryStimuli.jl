@@ -49,3 +49,14 @@ plot_cross_correlation
 ```@docs
 interaural_coherence
 ```
+
+## Depreciated
+
+```@docs
+bandpass_noise
+bandpass_filter
+amplitude_modulate
+ITD_modulate
+set_RMS
+set_ITD
+```
